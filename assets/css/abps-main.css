@@ -1,0 +1,405 @@
+/**
+ * A Better Plugins Screen - Main Styles
+ * @since 1.0.0
+ */
+
+/* ==========================================================================
+   Filter Box
+   ========================================================================== */
+
+.abps-filter-container {
+    margin-bottom: 20px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.abps-filter-wrapper {
+    position: relative;
+    max-width: 600px;
+}
+
+.abps-filter-input {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    font-size: 14px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    box-shadow: 0 0 0 transparent;
+    transition: border-color 0.1s ease-in-out, box-shadow 0.1s linear;
+}
+
+.abps-filter-input:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+}
+
+.abps-filter-clear {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #646970;
+    font-size: 24px;
+    line-height: 1;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s ease-in-out;
+}
+
+.abps-filter-clear:hover {
+    background: #f0f0f1;
+    color: #000;
+}
+
+.abps-filter-clear:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Configuration Panel
+   ========================================================================== */
+
+.abps-config-panel {
+    margin-bottom: 20px;
+}
+
+.abps-config-toggle {
+    margin-bottom: 10px;
+}
+
+.abps-config-content {
+    background: #f0f6fc;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.abps-config-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.abps-config-section:last-of-type {
+    border-bottom: none;
+}
+
+.abps-config-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.abps-config-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.abps-config-section label input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.abps-config-section select {
+    min-width: 200px;
+    margin-left: 10px;
+}
+
+.abps-config-section .description {
+    font-size: 13px;
+    color: #646970;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.abps-link-order-preview {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.abps-order-item {
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.abps-import-export {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.abps-import-export-textarea {
+    width: 100%;
+    min-height: 150px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+    padding: 10px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.abps-config-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #dcdcde;
+    margin-top: 20px;
+}
+
+.abps-config-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #dcdcde;
+}
+
+.abps-config-footer .description {
+    font-size: 12px;
+    color: #646970;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Edit Mode
+   ========================================================================== */
+
+.abps-edit-mode table.plugins tr.active {
+    transition: background-color 0.2s ease;
+}
+
+.abps-edit-mode table.plugins tr.active:hover {
+    background-color: #f0f6fc;
+}
+
+.abps-edit-controls {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    display: none;
+}
+
+.abps-edit-mode .abps-edit-controls {
+    display: block;
+}
+
+.abps-edit-control {
+    margin-bottom: 15px;
+}
+
+.abps-edit-control:last-child {
+    margin-bottom: 0;
+}
+
+.abps-edit-control label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.abps-edit-control input[type="text"] {
+    width: 100%;
+    max-width: 500px;
+    padding: 6px 8px;
+    font-size: 13px;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+.abps-edit-control input[type="text"]:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: 2px solid transparent;
+}
+
+.abps-edit-control .button {
+    margin-top: 5px;
+}
+
+/* ==========================================================================
+   Version Badge
+   ========================================================================== */
+
+.abps-version-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 6px;
+    background: #2271b1;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+/* ==========================================================================
+   Notifications
+   ========================================================================== */
+
+.abps-notification {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    z-index: 9999;
+    padding: 12px 20px;
+    background: #fff;
+    border-left: 4px solid #2271b1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    font-size: 14px;
+    max-width: 400px;
+    animation: abps-slide-in 0.3s ease;
+}
+
+.abps-notification-success {
+    border-left-color: #00a32a;
+}
+
+.abps-notification-error {
+    border-left-color: #d63638;
+}
+
+.abps-notification-info {
+    border-left-color: #2271b1;
+}
+
+.abps-notification-fadeout {
+    animation: abps-fade-out 0.3s ease forwards;
+}
+
+@keyframes abps-slide-in {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes abps-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   Discovered Settings Links
+   ========================================================================== */
+
+.abps-discovered a {
+    color: #2271b1;
+}
+
+.abps-no-settings span {
+    cursor: default;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media screen and (max-width: 782px) {
+    .abps-filter-container {
+        padding: 12px;
+    }
+
+    .abps-config-content {
+        padding: 15px;
+    }
+
+    .abps-import-export {
+        flex-direction: column;
+    }
+
+    .abps-config-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .abps-notification {
+        top: 46px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+.abps-filter-input:focus-visible,
+.abps-filter-clear:focus-visible,
+.abps-edit-control input:focus-visible,
+button:focus-visible {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .abps-filter-container,
+    .abps-config-content {
+        border-width: 2px;
+    }
+
+    .abps-filter-input,
+    .abps-edit-control input[type="text"] {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .abps-filter-input,
+    .abps-filter-clear,
+    .abps-notification,
+    .abps-edit-mode table.plugins tr.active {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .abps-filter-container,
+    .abps-config-panel,
+    .abps-edit-controls,
+    .abps-notification {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support (Future)
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles could be added here in future versions */
+}
