@@ -53,8 +53,10 @@
 
             const rows = table.querySelectorAll('#the-list tr.active');
             this.pluginRows = Array.from(rows).filter(row => {
-                // Exclude update rows and ABPS itself
-                return !row.classList.contains('plugin-update-tr');
+                // Exclude update rows, ABPS itself, and edit mode rows
+                return !row.classList.contains('plugin-update-tr') &&
+                       !row.classList.contains('abps-edit-row') &&
+                       row.dataset.slug !== 'a-better-plugins-screen';
             });
 
             this.log(`Collected ${this.pluginRows.length} plugin rows`);
@@ -233,6 +235,13 @@
             const table = document.querySelector('table.plugins');
 
             if (!table) return;
+
+            // Check if filter box already exists
+            const existingFilterBox = document.querySelector('.abps-filter-container');
+            if (existingFilterBox) {
+                this.log('Filter box already exists, skipping creation');
+                return;
+            }
 
             // Create filter box
             const filterBox = this.createFilterBox(filterConfig);

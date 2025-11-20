@@ -7,6 +7,12 @@
    Filter Box
    ========================================================================== */
 
+/* Hide WordPress native search box since ABPS provides superior search */
+.plugins .search-box,
+.plugins-php .wp-filter .search-form {
+    display: none !important;
+}
+
 .abps-filter-container {
     margin-bottom: 20px;
     background: #fff;

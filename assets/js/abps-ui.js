@@ -403,7 +403,7 @@
                 body.classList.add('abps-edit-mode');
                 if (toggleLink) toggleLink.textContent = 'Exit Edit Mode';
                 this.renderEditModeUI();
-                this.showNotification('Edit Mode enabled - hover over plugins to customize', 'info');
+                this.showNotification('Edit Mode enabled - edit controls displayed below each plugin', 'info');
 
                 // Dispatch event
                 document.dispatchEvent(new CustomEvent('abps:edit_mode_enabled'));
