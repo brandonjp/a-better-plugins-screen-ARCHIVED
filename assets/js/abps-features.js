@@ -326,10 +326,19 @@
                         value = row.dataset.slug || '';
                         break;
                     case 'description':
-                        value = row.querySelector('.plugin-description')?.textContent || '';
+                        // Only get the visible description text, not hidden content
+                        const descEl = row.querySelector('.plugin-description');
+                        if (descEl) {
+                            // Get only visible text by checking each text node
+                            value = this.getVisibleText(descEl);
+                        }
                         break;
                     case 'author':
-                        value = row.querySelector('.plugin-author')?.textContent || '';
+                        const authorEl = row.querySelector('.plugin-author');
+                        if (authorEl) {
+                            // Get visible author text
+                            value = this.getVisibleText(authorEl);
+                        }
                         break;
                 }
 
@@ -343,6 +352,52 @@
             }
 
             return false;
+        }
+
+        /**
+         * Get only visible text from an element (excludes hidden elements)
+         */
+        getVisibleText(element) {
+            let text = '';
+
+            // Walk through all child nodes
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+                {
+                    acceptNode: function(node) {
+                        // If it's a text node, check if parent is visible
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            const parent = node.parentElement;
+                            if (parent) {
+                                const style = window.getComputedStyle(parent);
+                                // Only include if element is visible
+                                if (style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0') {
+                                    return NodeFilter.FILTER_ACCEPT;
+                                }
+                            }
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        // For elements, check if they're hidden
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                            const style = window.getComputedStyle(node);
+                            if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+                                return NodeFilter.FILTER_REJECT;
+                            }
+                        }
+                        return NodeFilter.FILTER_SKIP;
+                    }
+                }
+            );
+
+            let node;
+            while (node = walker.nextNode()) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    text += node.textContent;
+                }
+            }
+
+            return text.trim();
         }
 
         /**
