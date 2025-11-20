@@ -186,6 +186,11 @@
     background-color: #f0f6fc;
 }
 
+/* Hide Deactivate links in Edit Mode to avoid confusion */
+.abps-edit-mode .row-actions span.deactivate {
+    display: none !important;
+}
+
 .abps-edit-controls {
     margin-top: 15px;
     padding: 15px;
@@ -232,22 +237,6 @@
 
 .abps-edit-control .button {
     margin-top: 5px;
-}
-
-/* ==========================================================================
-   Version Badge
-   ========================================================================== */
-
-.abps-version-badge {
-    display: inline-block;
-    margin-left: 8px;
-    padding: 2px 6px;
-    background: #2271b1;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    border-radius: 3px;
-    vertical-align: middle;
 }
 
 /* ==========================================================================

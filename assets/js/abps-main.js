@@ -95,9 +95,6 @@
                     detail: { version: this.version }
                 }));
 
-                // Add ABPS info to ABPS plugin row
-                this.addABPSInfo();
-
             } catch (error) {
                 console.error('ABPS: Initialization error', error);
             }
@@ -115,27 +112,6 @@
             const hasPluginsTable = document.querySelector('table.plugins') !== null;
 
             return isPluginsParam || hasPluginsTable;
-        }
-
-        /**
-         * Add ABPS version info to ABPS plugin row
-         */
-        addABPSInfo() {
-            const abpsRow = document.querySelector('tr[data-slug="a-better-plugins-screen"]');
-
-            if (!abpsRow) return;
-
-            const pluginTitle = abpsRow.querySelector('.plugin-title');
-
-            if (!pluginTitle) return;
-
-            // Add version badge
-            const badge = document.createElement('span');
-            badge.className = 'abps-version-badge';
-            badge.textContent = `v${this.version}`;
-            badge.title = 'ABPS is active';
-
-            pluginTitle.appendChild(badge);
         }
 
         /**

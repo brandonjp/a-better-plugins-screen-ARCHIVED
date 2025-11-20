@@ -29,13 +29,6 @@ define('ABPS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ABPS_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ABPS_PLUGIN_FILE', __FILE__);
 
-// Require Dependencies: https://github.com/afragen/wp-dependency-installer#description
-require_once ABPS_PLUGIN_DIR . 'vendor/autoload.php';
-
-add_action('plugins_loaded', function() {
-    WP_Dependency_Installer::instance(ABPS_PLUGIN_DIR)->run();
-});
-
 /**
  * Main ABPS Class
  */
