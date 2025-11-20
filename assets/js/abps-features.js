@@ -26,12 +26,14 @@
         init() {
             this.collectPluginRows();
 
-            if (this.config.get('features.linkReordering')) {
-                this.initLinkReordering();
-            }
-
+            // Run settings discovery BEFORE link reordering
+            // This ensures discovered settings get properly ordered with separators
             if (this.config.get('features.settingsDiscovery')) {
                 this.initSettingsDiscovery();
+            }
+
+            if (this.config.get('features.linkReordering')) {
+                this.initLinkReordering();
             }
 
             if (this.config.get('features.pluginFiltering')) {
