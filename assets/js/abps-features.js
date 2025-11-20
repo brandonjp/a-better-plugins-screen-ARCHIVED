@@ -164,7 +164,18 @@
 
                 if (!pluginTitle || !rowActions) return;
 
-                // Check if Settings link already exists
+                // Check if Settings link already exists (any link with "Settings" text)
+                const existingSettingsLink = Array.from(rowActions.querySelectorAll('a')).find(link =>
+                    link.textContent.trim().toLowerCase() === 'settings'
+                );
+
+                if (existingSettingsLink) {
+                    // Settings link already exists, no need to discover
+                    this.log(`Settings link already exists for ${slug}`);
+                    return;
+                }
+
+                // Also check for existing span.settings with a link
                 let settingsSpan = rowActions.querySelector('span.settings');
 
                 if (settingsSpan && settingsSpan.querySelector('a')) {

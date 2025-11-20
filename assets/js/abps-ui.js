@@ -24,12 +24,74 @@
          * Initialize UI
          */
         init() {
+            // Render config panel (hidden by default)
             if (this.config.get('features.configPanel')) {
                 this.renderConfigPanel();
             }
 
+            // Add Settings link to ABPS plugin row
+            this.addABPSSettingsLink();
+
             if (this.config.get('features.editMode')) {
                 this.addEditModeToggle();
+            }
+        }
+
+        /**
+         * Add Settings link to ABPS plugin row
+         */
+        addABPSSettingsLink() {
+            const abpsRow = document.querySelector('tr[data-slug="a-better-plugins-screen"]');
+            if (!abpsRow) return;
+
+            const rowActions = abpsRow.querySelector('.row-actions');
+            if (!rowActions) return;
+
+            // Find or create settings span
+            let settingsSpan = rowActions.querySelector('span.settings');
+
+            if (!settingsSpan) {
+                settingsSpan = document.createElement('span');
+                settingsSpan.className = 'settings';
+                // Insert after deactivate link
+                const deactivateSpan = rowActions.querySelector('span.deactivate');
+                if (deactivateSpan && deactivateSpan.nextSibling) {
+                    rowActions.insertBefore(settingsSpan, deactivateSpan.nextSibling);
+                } else {
+                    rowActions.appendChild(settingsSpan);
+                }
+            }
+
+            // Create settings link
+            const settingsLink = document.createElement('a');
+            settingsLink.href = '#';
+            settingsLink.textContent = 'Settings';
+            settingsLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.toggleConfigPanel();
+            });
+
+            settingsSpan.innerHTML = '';
+            settingsSpan.appendChild(settingsLink);
+        }
+
+        /**
+         * Toggle configuration panel
+         */
+        toggleConfigPanel() {
+            const content = document.querySelector('#abps-config-content');
+            const toggleButton = document.querySelector('.abps-config-toggle');
+
+            if (!content || !toggleButton) return;
+
+            this.configPanelVisible = !this.configPanelVisible;
+
+            if (this.configPanelVisible) {
+                content.style.display = 'block';
+                toggleButton.setAttribute('aria-expanded', 'true');
+            } else {
+                content.style.display = 'none';
+                toggleButton.setAttribute('aria-expanded', 'false');
             }
         }
 
@@ -42,18 +104,19 @@
 
             if (!table) return;
 
-            // Create panel container
+            // Create panel container (without visible toggle button)
             const panel = document.createElement('div');
             panel.className = 'abps-config-panel';
             panel.id = 'abps-config-panel';
 
-            // Create toggle button
+            // Create hidden toggle button for accessibility
             const toggleButton = document.createElement('button');
-            toggleButton.type = 'button'; // Prevent form submission
+            toggleButton.type = 'button';
             toggleButton.className = 'abps-config-toggle button button-secondary';
             toggleButton.innerHTML = `${config.buttonIcon} ${config.buttonText}`;
             toggleButton.setAttribute('aria-expanded', 'false');
             toggleButton.setAttribute('aria-controls', 'abps-config-content');
+            toggleButton.style.display = 'none'; // Hide the button
 
             // Create panel content
             const content = document.createElement('div');

@@ -95,9 +95,46 @@
                     detail: { version: this.version }
                 }));
 
+                // Watch for WordPress native search replacing the plugin table
+                this.watchForTableChanges();
+
             } catch (error) {
                 console.error('ABPS: Initialization error', error);
             }
+        }
+
+        /**
+         * Watch for plugin table changes (e.g., WordPress native search)
+         */
+        watchForTableChanges() {
+            const pluginList = document.querySelector('#the-list');
+            if (!pluginList) return;
+
+            // Create observer to watch for table changes
+            const observer = new MutationObserver((mutations) => {
+                // Check if significant changes occurred
+                const significantChange = mutations.some(mutation =>
+                    mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0
+                );
+
+                if (significantChange) {
+                    this.log('Plugin table changed, re-initializing ABPS...');
+
+                    // Small delay to let WP finish its updates
+                    setTimeout(() => {
+                        this.features.init();
+                        // Don't re-init UI (Settings link, config panel already exist)
+                    }, 100);
+                }
+            });
+
+            // Start observing
+            observer.observe(pluginList, {
+                childList: true,
+                subtree: false
+            });
+
+            this.log('Watching for plugin table changes');
         }
 
         /**
