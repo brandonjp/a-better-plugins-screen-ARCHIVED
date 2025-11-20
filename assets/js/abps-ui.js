@@ -49,6 +49,7 @@
 
             // Create toggle button
             const toggleButton = document.createElement('button');
+            toggleButton.type = 'button'; // Prevent form submission
             toggleButton.className = 'abps-config-toggle button button-secondary';
             toggleButton.innerHTML = `${config.buttonIcon} ${config.buttonText}`;
             toggleButton.setAttribute('aria-expanded', 'false');
@@ -159,7 +160,8 @@
          */
         setupConfigPanelEvents(toggleButton, content) {
             // Toggle panel visibility
-            toggleButton.addEventListener('click', () => {
+            toggleButton.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent any default action
                 this.configPanelVisible = !this.configPanelVisible;
 
                 if (this.configPanelVisible) {
@@ -361,43 +363,60 @@
 
             pluginRows.forEach(row => {
                 const slug = row.dataset.slug;
-                const td = row.querySelector('.plugin-title');
 
-                if (!td) return;
+                // Skip if edit row already exists
+                if (row.nextElementSibling?.classList.contains('abps-edit-row')) {
+                    return;
+                }
+
+                // Create a new table row for edit controls (full width)
+                const editRow = document.createElement('tr');
+                editRow.className = 'abps-edit-row';
+                editRow.dataset.pluginSlug = slug;
+
+                // Create a single td that spans all columns
+                const editTd = document.createElement('td');
+                editTd.setAttribute('colspan', '100'); // Span all columns
+                editTd.className = 'abps-edit-controls-container';
 
                 // Create edit controls
-                const editControls = document.createElement('div');
-                editControls.className = 'abps-edit-controls';
-                editControls.innerHTML = `
-                    <div class="abps-edit-control">
-                        <label>
-                            Custom Settings URL:
-                            <input type="text" class="abps-custom-url-input" placeholder="admin.php?page=..." value="${this.storage.loadCustomSettingsUrl(slug) || ''}">
-                        </label>
-                        <button type="button" class="button button-small abps-save-url">Save</button>
-                    </div>
-                    <div class="abps-edit-control">
-                        <label>
-                            Notes:
-                            <input type="text" class="abps-notes-input" placeholder="Add notes..." value="${this.storage.loadPluginNotes(slug) || ''}">
-                        </label>
-                        <button type="button" class="button button-small abps-save-notes">Save</button>
+                editTd.innerHTML = `
+                    <div class="abps-edit-controls">
+                        <div class="abps-edit-controls-grid">
+                            <div class="abps-edit-control">
+                                <label>
+                                    <strong>Custom Settings URL:</strong>
+                                    <input type="text" class="abps-custom-url-input" placeholder="admin.php?page=..." value="${this.storage.loadCustomSettingsUrl(slug) || ''}">
+                                </label>
+                                <button type="button" class="button button-small abps-save-url">Save URL</button>
+                            </div>
+                            <div class="abps-edit-control">
+                                <label>
+                                    <strong>Notes:</strong>
+                                    <input type="text" class="abps-notes-input" placeholder="Add notes about this plugin..." value="${this.storage.loadPluginNotes(slug) || ''}">
+                                </label>
+                                <button type="button" class="button button-small abps-save-notes">Save Notes</button>
+                            </div>
+                        </div>
                     </div>
                 `;
 
-                td.appendChild(editControls);
+                editRow.appendChild(editTd);
+
+                // Insert the edit row right after the plugin row
+                row.parentNode.insertBefore(editRow, row.nextSibling);
 
                 // Set up events
-                const saveUrlButton = editControls.querySelector('.abps-save-url');
+                const saveUrlButton = editTd.querySelector('.abps-save-url');
                 saveUrlButton.addEventListener('click', () => {
-                    const input = editControls.querySelector('.abps-custom-url-input');
+                    const input = editTd.querySelector('.abps-custom-url-input');
                     this.storage.saveCustomSettingsUrl(slug, input.value);
                     this.showNotification('Custom URL saved!', 'success');
                 });
 
-                const saveNotesButton = editControls.querySelector('.abps-save-notes');
+                const saveNotesButton = editTd.querySelector('.abps-save-notes');
                 saveNotesButton.addEventListener('click', () => {
-                    const input = editControls.querySelector('.abps-notes-input');
+                    const input = editTd.querySelector('.abps-notes-input');
                     this.storage.savePluginNotes(slug, input.value);
                     this.showNotification('Notes saved!', 'success');
                 });
@@ -408,8 +427,8 @@
          * Remove edit mode UI controls
          */
         removeEditModeUI() {
-            const editControls = document.querySelectorAll('.abps-edit-controls');
-            editControls.forEach(control => control.remove());
+            const editRows = document.querySelectorAll('.abps-edit-row');
+            editRows.forEach(row => row.remove());
         }
 
         /**
