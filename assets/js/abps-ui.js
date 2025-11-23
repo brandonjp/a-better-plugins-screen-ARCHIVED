@@ -53,10 +53,19 @@
             if (!settingsSpan) {
                 settingsSpan = document.createElement('span');
                 settingsSpan.className = 'settings';
-                // Insert after deactivate link
+
+                // Insert after deactivate link with proper separator
                 const deactivateSpan = rowActions.querySelector('span.deactivate');
-                if (deactivateSpan && deactivateSpan.nextSibling) {
-                    rowActions.insertBefore(settingsSpan, deactivateSpan.nextSibling);
+                if (deactivateSpan) {
+                    // Add pipe separator before inserting
+                    const separator = document.createTextNode(' | ');
+                    if (deactivateSpan.nextSibling) {
+                        rowActions.insertBefore(separator, deactivateSpan.nextSibling);
+                        rowActions.insertBefore(settingsSpan, deactivateSpan.nextSibling);
+                    } else {
+                        rowActions.appendChild(separator);
+                        rowActions.appendChild(settingsSpan);
+                    }
                 } else {
                     rowActions.appendChild(settingsSpan);
                 }

@@ -271,13 +271,37 @@
             // Add ABPS styling class
             searchInput.classList.add('abps-enhanced-search');
 
-            // Prevent default form submission
+            // Hide the submit button (we don't want form submission)
+            const submitButton = searchInput.form?.querySelector('#search-submit');
+            if (submitButton) {
+                submitButton.style.display = 'none';
+            }
+
+            // Prevent default form submission (multiple approaches for reliability)
             const form = searchInput.closest('form');
             if (form) {
+                // Remove the default action
+                form.setAttribute('action', 'javascript:void(0);');
+
+                // Prevent form submission via submit event
                 form.addEventListener('submit', (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     return false;
-                });
+                }, true); // Use capture phase for priority
+
+                // Also handle via onsubmit
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    return false;
+                };
+            }
+
+            // Clear any existing search parameter from URL without reload
+            if (window.location.search.includes('s=')) {
+                const url = new URL(window.location);
+                url.searchParams.delete('s');
+                window.history.replaceState({}, '', url);
             }
 
             // Set up ABPS filter event
@@ -292,6 +316,14 @@
                 if (e.key === 'Escape') {
                     searchInput.value = '';
                     this.filterPlugins('', filterConfig);
+                }
+            });
+
+            // Prevent Enter key from submitting form
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    return false;
                 }
             });
 
