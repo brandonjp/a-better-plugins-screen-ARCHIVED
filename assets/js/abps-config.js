@@ -53,7 +53,7 @@
         filterBox: {
             enabled: true,
             placement: 'above_plugins_list',
-            placeholder: 'Search plugins...',
+            placeholder: 'Search plugins (powered by A Better Plugins Screen)',
             searchableFields: ['name', 'slug', 'description', 'author'],
             matchType: 'partial',
             caseSensitive: false,

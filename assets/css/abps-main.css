@@ -4,21 +4,15 @@
  */
 
 /* ==========================================================================
-   Enhanced Native Search
+   ABPS Filter Box
    ========================================================================== */
 
-/* Style the enhanced native search to indicate ABPS is active */
-.abps-enhanced-search {
-    border-color: #2271b1 !important;
-    box-shadow: 0 0 0 1px #2271b1 !important;
+/* Hide the native WordPress search since ABPS provides better search */
+.search-form.search-plugins {
+    display: none !important;
 }
 
-.abps-enhanced-search:focus {
-    border-color: #135e96 !important;
-    box-shadow: 0 0 0 2px #135e96 !important;
-}
-
-/* Legacy filter container (no longer used, but keeping for compatibility) */
+/* ABPS custom filter box */
 .abps-filter-container {
     margin-bottom: 20px;
     background: #fff;

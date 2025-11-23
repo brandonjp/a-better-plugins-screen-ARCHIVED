@@ -18,7 +18,7 @@
             this.discovery = discovery;
             this.pluginRows = [];
             this.filterTimeout = null;
-            this.nativeSearchEnhanced = false;
+            this.filterBoxCreated = false;
         }
 
         /**
@@ -233,101 +233,54 @@
             this.log('Initializing plugin filtering');
 
             const filterConfig = this.config.get('filterBox');
+            const table = document.querySelector('table.plugins');
 
-            // Check if we've already enhanced the native search
-            if (this.nativeSearchEnhanced) {
-                this.log('Native search already enhanced, skipping');
+            if (!table) return;
+
+            // Check if filter box already exists
+            if (this.filterBoxCreated) {
+                this.log('Filter box already created, skipping');
                 return;
             }
 
-            // Find the native WordPress search input
-            const nativeSearchInput = document.querySelector('#plugin-search-input, .wp-filter-search');
+            // Create custom ABPS filter box
+            const filterBox = this.createFilterBox(filterConfig);
 
-            if (!nativeSearchInput) {
-                this.log('Native search input not found');
-                return;
+            // Insert above the plugins table
+            if (filterConfig.placement === 'above_plugins_list') {
+                table.parentNode.insertBefore(filterBox, table);
             }
 
-            // Enhance the native search with ABPS functionality
-            this.enhanceNativeSearch(nativeSearchInput, filterConfig);
-            this.nativeSearchEnhanced = true;
-        }
+            // Set up filter events
+            const filterInput = filterBox.querySelector('.abps-filter-input');
+            const clearButton = filterBox.querySelector('.abps-filter-clear');
 
-        /**
-         * Enhance native WordPress search with ABPS functionality
-         */
-        enhanceNativeSearch(searchInput, filterConfig) {
-            this.log('Enhancing native search with ABPS functionality');
+            if (filterInput) {
+                filterInput.addEventListener('input', (e) => {
+                    clearTimeout(this.filterTimeout);
+                    this.filterTimeout = setTimeout(() => {
+                        this.filterPlugins(e.target.value, filterConfig);
+                    }, filterConfig.debounceMs);
+                });
 
-            // Update placeholder to indicate ABPS is active
-            searchInput.placeholder = 'Search plugins (powered by A Better Plugins Screen)';
-
-            // Update the label if it exists
-            const label = searchInput.previousElementSibling;
-            if (label && label.tagName === 'LABEL') {
-                label.textContent = 'Search plugins (powered by A Better Plugins Screen)';
+                filterInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Escape') {
+                        filterInput.value = '';
+                        this.filterPlugins('', filterConfig);
+                    }
+                });
             }
 
-            // Add ABPS styling class
-            searchInput.classList.add('abps-enhanced-search');
-
-            // Hide the submit button (we don't want form submission)
-            const submitButton = searchInput.form?.querySelector('#search-submit');
-            if (submitButton) {
-                submitButton.style.display = 'none';
-            }
-
-            // Prevent default form submission (multiple approaches for reliability)
-            const form = searchInput.closest('form');
-            if (form) {
-                // Remove the default action
-                form.setAttribute('action', 'javascript:void(0);');
-
-                // Prevent form submission via submit event
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }, true); // Use capture phase for priority
-
-                // Also handle via onsubmit
-                form.onsubmit = (e) => {
-                    e.preventDefault();
-                    return false;
-                };
-            }
-
-            // Clear any existing search parameter from URL without reload
-            if (window.location.search.includes('s=')) {
-                const url = new URL(window.location);
-                url.searchParams.delete('s');
-                window.history.replaceState({}, '', url);
-            }
-
-            // Set up ABPS filter event
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(this.filterTimeout);
-                this.filterTimeout = setTimeout(() => {
-                    this.filterPlugins(e.target.value, filterConfig);
-                }, filterConfig.debounceMs);
-            });
-
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Escape') {
-                    searchInput.value = '';
+            if (clearButton) {
+                clearButton.addEventListener('click', () => {
+                    filterInput.value = '';
                     this.filterPlugins('', filterConfig);
-                }
-            });
+                    filterInput.focus();
+                });
+            }
 
-            // Prevent Enter key from submitting form
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-
-            this.log('Native search enhanced successfully');
+            this.filterBoxCreated = true;
+            this.log('Custom ABPS filter box created');
         }
 
         /**
