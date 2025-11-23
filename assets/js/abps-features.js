@@ -233,9 +233,6 @@
             this.log('Initializing plugin filtering');
 
             const filterConfig = this.config.get('filterBox');
-            const table = document.querySelector('table.plugins');
-
-            if (!table) return;
 
             // Check if filter box already exists
             if (this.filterBoxCreated) {
@@ -243,13 +240,18 @@
                 return;
             }
 
+            // Find the native WordPress search form
+            const nativeSearchForm = document.querySelector('.search-form.search-plugins');
+            if (!nativeSearchForm) {
+                this.log('Native search form not found');
+                return;
+            }
+
             // Create custom ABPS filter box
             const filterBox = this.createFilterBox(filterConfig);
 
-            // Insert above the plugins table
-            if (filterConfig.placement === 'above_plugins_list') {
-                table.parentNode.insertBefore(filterBox, table);
-            }
+            // Insert ABPS search box in place of native search (right after the form)
+            nativeSearchForm.parentNode.insertBefore(filterBox, nativeSearchForm.nextSibling);
 
             // Set up filter events
             const filterInput = filterBox.querySelector('.abps-filter-input');

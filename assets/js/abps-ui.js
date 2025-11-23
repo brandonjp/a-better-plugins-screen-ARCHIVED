@@ -431,7 +431,12 @@
          * Render edit mode UI controls
          */
         renderEditModeUI() {
-            const pluginRows = document.querySelectorAll('table.plugins #the-list tr.active:not(.plugin-update-tr)');
+            const allPluginRows = document.querySelectorAll('table.plugins #the-list tr.active:not(.plugin-update-tr)');
+
+            // Filter to only visible rows (not hidden by search/filtering)
+            const pluginRows = Array.from(allPluginRows).filter(row => {
+                return row.style.display !== 'none';
+            });
 
             pluginRows.forEach(row => {
                 const slug = row.dataset.slug;
