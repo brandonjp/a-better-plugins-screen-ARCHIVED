@@ -4,15 +4,21 @@
  */
 
 /* ==========================================================================
-   Filter Box
+   Enhanced Native Search
    ========================================================================== */
 
-/* Hide WordPress native search box since ABPS provides superior search */
-.plugins .search-box,
-.plugins-php .wp-filter .search-form {
-    display: none !important;
+/* Style the enhanced native search to indicate ABPS is active */
+.abps-enhanced-search {
+    border-color: #2271b1 !important;
+    box-shadow: 0 0 0 1px #2271b1 !important;
 }
 
+.abps-enhanced-search:focus {
+    border-color: #135e96 !important;
+    box-shadow: 0 0 0 2px #135e96 !important;
+}
+
+/* Legacy filter container (no longer used, but keeping for compatibility) */
 .abps-filter-container {
     margin-bottom: 20px;
     background: #fff;
@@ -194,6 +200,11 @@
 
 /* Hide Deactivate links in Edit Mode to avoid confusion */
 .abps-edit-mode .row-actions span.deactivate {
+    display: none !important;
+}
+
+/* Hide update notification rows in Edit Mode to reduce clutter */
+.abps-edit-mode .plugin-update-tr {
     display: none !important;
 }
 
