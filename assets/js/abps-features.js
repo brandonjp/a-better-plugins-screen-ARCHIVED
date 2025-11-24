@@ -240,18 +240,18 @@
                 return;
             }
 
-            // Find the native WordPress search form
-            const nativeSearchForm = document.querySelector('.search-form.search-plugins');
-            if (!nativeSearchForm) {
-                this.log('Native search form not found');
+            // Find the native WordPress search box paragraph element
+            const searchBox = document.querySelector('.search-form.search-plugins .search-box');
+            if (!searchBox) {
+                this.log('Native search box not found');
                 return;
             }
 
             // Create custom ABPS filter box
             const filterBox = this.createFilterBox(filterConfig);
 
-            // Insert ABPS search box in place of native search (right after the form)
-            nativeSearchForm.parentNode.insertBefore(filterBox, nativeSearchForm.nextSibling);
+            // Replace the native search box with ABPS search box
+            searchBox.parentNode.replaceChild(filterBox, searchBox);
 
             // Set up filter events
             const filterInput = filterBox.querySelector('.abps-filter-input');
@@ -326,6 +326,12 @@
                     if (updateRow) {
                         updateRow.style.display = '';
                     }
+
+                    // Show corresponding edit row if it exists
+                    const editRow = this.getEditRow(row);
+                    if (editRow) {
+                        editRow.classList.remove('abps-filtered-out');
+                    }
                 } else {
                     row.style.display = 'none';
 
@@ -333,6 +339,12 @@
                     const updateRow = this.getUpdateRow(row);
                     if (updateRow) {
                         updateRow.style.display = 'none';
+                    }
+
+                    // Hide corresponding edit row if it exists
+                    const editRow = this.getEditRow(row);
+                    if (editRow) {
+                        editRow.classList.add('abps-filtered-out');
                     }
                 }
             });
@@ -354,6 +366,31 @@
             if (nextRow && nextRow.classList.contains('plugin-update-tr')) {
                 return nextRow;
             }
+            return null;
+        }
+
+        /**
+         * Get the edit row for a plugin row
+         */
+        getEditRow(pluginRow) {
+            const slug = pluginRow.dataset.slug;
+            if (!slug) return null;
+
+            // Edit row could be next sibling or after update row
+            let currentRow = pluginRow.nextElementSibling;
+
+            // Skip update row if present
+            if (currentRow && currentRow.classList.contains('plugin-update-tr')) {
+                currentRow = currentRow.nextElementSibling;
+            }
+
+            // Check if this is the edit row for our plugin
+            if (currentRow &&
+                currentRow.classList.contains('abps-edit-row') &&
+                currentRow.dataset.pluginSlug === slug) {
+                return currentRow;
+            }
+
             return null;
         }
 

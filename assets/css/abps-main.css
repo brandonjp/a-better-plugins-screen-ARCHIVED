@@ -7,19 +7,13 @@
    ABPS Filter Box
    ========================================================================== */
 
-/* Hide the native WordPress search since ABPS provides better search */
-.search-form.search-plugins {
-    display: none !important;
-}
-
-/* ABPS custom filter box */
+/* ABPS filter box that replaces native WordPress search */
 .abps-filter-container {
-    margin-bottom: 20px;
-    background: #fff;
-    border: 1px solid #c3c4c7;
-    border-radius: 4px;
-    padding: 15px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 .abps-filter-wrapper {
@@ -28,9 +22,10 @@
 }
 
 .abps-filter-input {
-    width: 100%;
-    padding: 8px 40px 8px 12px;
-    font-size: 14px;
+    width: 280px;
+    padding: 3px 30px 3px 10px;
+    font-size: 13px;
+    line-height: 2.15384615;
     border: 1px solid #8c8f94;
     border-radius: 4px;
     box-shadow: 0 0 0 transparent;
@@ -45,15 +40,15 @@
 
 .abps-filter-clear {
     position: absolute;
-    right: 5px;
+    right: 2px;
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
     border: none;
     color: #646970;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1;
-    padding: 5px 10px;
+    padding: 2px 6px;
     cursor: pointer;
     border-radius: 3px;
     transition: all 0.15s ease-in-out;
@@ -208,8 +203,14 @@
     display: none;
 }
 
+/* In edit mode, show edit rows */
 .abps-edit-mode .abps-edit-row {
     display: table-row;
+}
+
+/* Hidden by filtering takes precedence */
+.abps-edit-mode .abps-edit-row.abps-filtered-out {
+    display: none !important;
 }
 
 .abps-edit-controls-container {
