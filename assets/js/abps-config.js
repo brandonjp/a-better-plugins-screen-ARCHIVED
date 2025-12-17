@@ -12,7 +12,7 @@
      * Default configuration - immutable base settings
      */
     const ABPS_DEFAULTS = {
-        version: '1.0.0',
+        version: '1.0.1',
 
         // Feature flags
         features: {

@@ -5,6 +5,82 @@ All notable changes to **A Better Plugins Screen** will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-12-17
+
+### 🐛 Bug Fixes & UX Improvements
+
+This release fixes critical UX issues identified after the 1.0.0 release, improving search positioning, edit mode behavior, and overall stability.
+
+### Fixed
+
+**Search Box Positioning:**
+- Fixed search box not appearing in native WordPress search location
+- Search box now truly replaces native WP search using `replaceChild()` instead of inserting after
+- Removed custom box styling to match native WordPress appearance
+- Search box width, padding, and font size now match native (280px width, 13px font)
+- Fixed issue where plugin navigation links appeared between forms
+
+**Edit Mode Visibility:**
+- Fixed edit controls appearing for ALL plugins when filtering was active
+- Edit rows now properly hide/show based on parent plugin visibility in both workflows:
+  - Filter first → Enable edit mode ✓
+  - Enable edit mode → Filter ✓
+- Added `getEditRow()` helper to properly find and manage edit rows
+- Used class-based hiding (`.abps-filtered-out`) for better CSS control
+
+**Duplicate Search Box:**
+- Fixed duplicate search boxes appearing when entering edit mode
+- Added `filterBoxCreated` flag to prevent re-initialization
+- Search box is only created once per page load
+
+**ABPS Row Action Links:**
+- Fixed missing pipe separator between "Deactivate" and "Settings"
+- Links now properly display: "Deactivate | Settings | Edit Mode"
+
+**Update Notification Rows:**
+- Update rows now hide when parent plugin is filtered out
+- Update rows hidden in edit mode to reduce clutter
+- Prevents orphaned update notices during search
+
+### Changed
+
+**Edit Mode Improvements:**
+- Edit mode notification message changed from confusing "hover over plugins to customize" to clear "edit controls displayed below each plugin"
+- Edit rows properly respect filtering state
+- ABPS plugin row always visible during filtering (intentional - allows access to Settings and Edit Mode)
+
+**Code Quality:**
+- Excluded ABPS row from link reordering to preserve custom action links
+- Excluded edit mode rows from plugin row collection
+- Better separation of concerns between filtering and edit mode
+
+### Technical
+
+**JavaScript Changes:**
+- `initPluginFiltering()`: Now finds `.search-box` element and uses `replaceChild()`
+- `filterPlugins()`: Added edit row hiding/showing logic
+- `getEditRow()`: New helper method to find edit rows reliably
+- `collectPluginRows()`: Excludes ABPS row and edit rows
+
+**CSS Changes:**
+- Removed custom filter box styling (white background, padding, border)
+- Added `.abps-filtered-out` class for proper edit row hiding
+- Updated `.abps-edit-mode .abps-edit-row` display logic
+
+**Files Modified:**
+- `assets/js/abps-features.js` - Search positioning, edit row management
+- `assets/js/abps-ui.js` - Edit mode toggle, proper separators
+- `assets/css/abps-main.css` - Native-matching styles, filtered-out class
+- `assets/js/abps-config.js` - Placeholder text update
+
+### Documentation
+
+- Updated README.md with v1.0.1
+- Added comprehensive changelog entry
+- Version numbers bumped across all files
+
+---
+
 ## [1.0.0] - 2025-11-12
 
 ### 🎉 Major Release - Complete Rewrite
