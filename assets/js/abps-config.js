@@ -12,7 +12,7 @@
      * Default configuration - immutable base settings
      */
     const ABPS_DEFAULTS = {
-        version: '1.0.0',
+        version: '1.0.1',
 
         // Feature flags
         features: {
@@ -53,7 +53,7 @@
         filterBox: {
             enabled: true,
             placement: 'above_plugins_list',
-            placeholder: 'Search plugins...',
+            placeholder: 'Search plugins (powered by A Better Plugins Screen)',
             searchableFields: ['name', 'slug', 'description', 'author'],
             matchType: 'partial',
             caseSensitive: false,

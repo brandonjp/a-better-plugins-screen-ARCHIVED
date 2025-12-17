@@ -1,6 +1,6 @@
 # ⚡ A Better Plugins Screen (ABPS)
 
-**Version 1.0.0** - Transform your WordPress plugins page into an intelligent management dashboard
+**Version 1.0.1** - Transform your WordPress plugins page into an intelligent management dashboard
 
 [![WordPress Plugin Version](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)](https://wordpress.org/)
 [![PHP Version](https://img.shields.io/badge/PHP-7.0%2B-purple.svg)](https://php.net/)
@@ -84,35 +84,82 @@ Then activate through the WordPress admin.
 2. Upload to `/wp-content/plugins/`
 3. Activate through the Plugins menu
 
-## 💡 Usage
+## 💡 How to Use
 
-### Basic Usage
+### What Does This Plugin Do?
 
-**No configuration required!** Just activate the plugin and visit your Plugins page.
+**A Better Plugins Screen** enhances your WordPress Plugins page with these immediate improvements:
+
+1. **🔍 Enhanced Search** - Replaces the default WordPress search with a powerful real-time filter that searches plugin names, descriptions, authors, and slugs instantly
+2. **🔗 Consistent Link Order** - All plugins show action links in the same order (Deactivate | Settings | Other links)
+3. **⚡ Automatic Settings Discovery** - Finds plugin settings pages automatically, even when plugins don't provide a Settings link
+4. **✏️ Edit Mode** - Customize individual plugins with custom settings URLs and personal notes
+5. **⚙️ Configuration** - Adjust all features through an easy-to-use settings panel
+
+### Quick Start (Zero Configuration!)
+
+**No setup required!** Just activate the plugin and visit your Plugins page (`/wp-admin/plugins.php`).
 
 You'll immediately see:
-- ✅ Consistent link ordering
-- ✅ Auto-discovered settings links
-- ✅ Real-time search box
-- ✅ ABPS Settings button
+- ✅ A search box at the top that says "Search plugins (powered by A Better Plugins Screen)"
+- ✅ All plugin action links in consistent order: **Deactivate | Settings | ...**
+- ✅ Settings links automatically added to plugins that were missing them
+- ✅ "Settings | Edit Mode" links in the ABPS plugin row
+
+### Using the Search Feature
+
+The search box appears where the native WordPress search used to be.
+
+**To search:**
+1. Type anything in the search box
+2. Results filter instantly (no page reload!)
+3. Searches: Plugin names, descriptions, authors, slugs
+4. Press **ESC** or click the **×** button to clear
+
+**Example searches:**
+- Type "security" to find all security-related plugins
+- Type "editor" to find content editors
+- Type "author name" to find all plugins by that author
+
+### Using Edit Mode
+
+Edit Mode lets you customize individual plugins:
+
+**To enable Edit Mode:**
+1. Find "A Better Plugins Screen" in your plugin list
+2. Click **Edit Mode** in its action links
+3. Edit controls appear below each visible plugin
+
+**What you can do:**
+- **Custom Settings URL**: Override the settings link with your own URL
+- **Notes**: Add personal notes about each plugin (reminders, configuration notes, etc.)
+
+**To exit Edit Mode:**
+- Click **Exit Edit Mode** in the ABPS plugin row
+
+**Important:**
+- Edit controls only show for visible (not filtered) plugins
+- If you filter first, then enable edit mode: Only filtered plugins show controls
+- If you enable edit mode first, then filter: Controls hide for filtered-out plugins
 
 ### Configuration Panel
 
-Click the **⚙️ ABPS Settings** button to access:
+Access advanced settings:
 
+**To open settings:**
+1. Find "A Better Plugins Screen" in your plugin list
+2. Click **Settings** in its action links
+3. The configuration panel appears above the plugin list
+
+**Available settings:**
 - **Features Toggle** - Enable/disable individual features
-- **Link Order** - Customize default link ordering
+- **Link Order** - Customize default link ordering (future feature)
 - **Filter Settings** - Configure search behavior
-- **Import/Export** - Share settings across sites
-- **Debug Mode** - Enable console logging
+- **Import/Export** - Share settings across sites or backup your config
+- **Debug Mode** - Enable console logging for troubleshooting
 
-### Edit Mode
-
-1. Click **Edit Mode** in the ABPS plugin row
-2. Hover over any plugin to see edit controls
-3. Add custom settings URLs
-4. Add notes for organization
-5. Changes save automatically to localStorage
+**To close settings:**
+- Click **Settings** again or just close the panel
 
 ### JavaScript API
 
@@ -319,6 +366,26 @@ If you find this plugin helpful:
 
 ## 📚 Changelog
 
+### Version 1.0.1 (December 2025)
+
+🐛 **Bug Fixes & UX Improvements**
+
+**Fixed:**
+- Search box now appears in native WordPress location (not below)
+- Edit mode controls properly hide when parent plugin is filtered
+- Duplicate search boxes no longer appear
+- Proper spacing between ABPS action links (Deactivate | Settings | Edit Mode)
+- Update notification rows properly hide during filtering
+- Navigation links no longer appear between search forms
+
+**Improved:**
+- Search box matches native WordPress styling (280px width, proper padding)
+- Edit mode message clarified: "edit controls displayed below each plugin"
+- Better state management for edit rows during filtering
+- Works correctly in both workflows: Filter→Edit Mode and Edit Mode→Filter
+
+See [CHANGELOG.md](CHANGELOG.md) for complete details.
+
 ### Version 1.0.0 (November 2025)
 
 🎉 **Major Release - Complete Rewrite**
@@ -339,8 +406,6 @@ If you find this plugin helpful:
 - Better performance
 - Improved code quality
 - PHP 7.0+ and WordPress 5.0+ required
-
-See [full changelog](readme.txt#changelog) for complete history.
 
 ## 🗺️ Roadmap
 

@@ -4,7 +4,7 @@ Plugin Name: A Better Plugins Screen
 Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 GitHub Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 Description: Enhances the WordPress plugins screen with intelligent link reordering, settings discovery, real-time filtering, and configuration options. Zero configuration required - works out of the box!
-Version: 1.0.0
+Version: 1.0.1
 Author: Brandon Pfeiffer
 Author URI: http://brandonjp.com
 Requires at least: 5.0
@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('ABPS_VERSION', '1.0.0');
+define('ABPS_VERSION', '1.0.1');
 define('ABPS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ABPS_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ABPS_PLUGIN_FILE', __FILE__);

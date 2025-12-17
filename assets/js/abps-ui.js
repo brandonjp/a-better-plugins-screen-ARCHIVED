@@ -53,10 +53,19 @@
             if (!settingsSpan) {
                 settingsSpan = document.createElement('span');
                 settingsSpan.className = 'settings';
-                // Insert after deactivate link
+
+                // Insert after deactivate link with proper separator
                 const deactivateSpan = rowActions.querySelector('span.deactivate');
-                if (deactivateSpan && deactivateSpan.nextSibling) {
-                    rowActions.insertBefore(settingsSpan, deactivateSpan.nextSibling);
+                if (deactivateSpan) {
+                    // Add pipe separator before inserting
+                    const separator = document.createTextNode(' | ');
+                    if (deactivateSpan.nextSibling) {
+                        rowActions.insertBefore(separator, deactivateSpan.nextSibling);
+                        rowActions.insertBefore(settingsSpan, deactivateSpan.nextSibling);
+                    } else {
+                        rowActions.appendChild(separator);
+                        rowActions.appendChild(settingsSpan);
+                    }
                 } else {
                     rowActions.appendChild(settingsSpan);
                 }
@@ -403,7 +412,7 @@
                 body.classList.add('abps-edit-mode');
                 if (toggleLink) toggleLink.textContent = 'Exit Edit Mode';
                 this.renderEditModeUI();
-                this.showNotification('Edit Mode enabled - hover over plugins to customize', 'info');
+                this.showNotification('Edit Mode enabled - edit controls displayed below each plugin', 'info');
 
                 // Dispatch event
                 document.dispatchEvent(new CustomEvent('abps:edit_mode_enabled'));
@@ -422,7 +431,12 @@
          * Render edit mode UI controls
          */
         renderEditModeUI() {
-            const pluginRows = document.querySelectorAll('table.plugins #the-list tr.active:not(.plugin-update-tr)');
+            const allPluginRows = document.querySelectorAll('table.plugins #the-list tr.active:not(.plugin-update-tr)');
+
+            // Filter to only visible rows (not hidden by search/filtering)
+            const pluginRows = Array.from(allPluginRows).filter(row => {
+                return row.style.display !== 'none';
+            });
 
             pluginRows.forEach(row => {
                 const slug = row.dataset.slug;

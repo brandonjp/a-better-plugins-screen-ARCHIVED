@@ -18,6 +18,7 @@
             this.discovery = discovery;
             this.pluginRows = [];
             this.filterTimeout = null;
+            this.filterBoxCreated = false;
         }
 
         /**
@@ -53,8 +54,10 @@
 
             const rows = table.querySelectorAll('#the-list tr.active');
             this.pluginRows = Array.from(rows).filter(row => {
-                // Exclude update rows and ABPS itself
-                return !row.classList.contains('plugin-update-tr');
+                // Exclude update rows, ABPS itself, and edit mode rows
+                return !row.classList.contains('plugin-update-tr') &&
+                       !row.classList.contains('abps-edit-row') &&
+                       row.dataset.slug !== 'a-better-plugins-screen';
             });
 
             this.log(`Collected ${this.pluginRows.length} plugin rows`);
@@ -230,19 +233,27 @@
             this.log('Initializing plugin filtering');
 
             const filterConfig = this.config.get('filterBox');
-            const table = document.querySelector('table.plugins');
 
-            if (!table) return;
-
-            // Create filter box
-            const filterBox = this.createFilterBox(filterConfig);
-
-            // Insert filter box based on placement
-            if (filterConfig.placement === 'above_plugins_list') {
-                table.parentNode.insertBefore(filterBox, table);
+            // Check if filter box already exists
+            if (this.filterBoxCreated) {
+                this.log('Filter box already created, skipping');
+                return;
             }
 
-            // Set up filter event
+            // Find the native WordPress search box paragraph element
+            const searchBox = document.querySelector('.search-form.search-plugins .search-box');
+            if (!searchBox) {
+                this.log('Native search box not found');
+                return;
+            }
+
+            // Create custom ABPS filter box
+            const filterBox = this.createFilterBox(filterConfig);
+
+            // Replace the native search box with ABPS search box
+            searchBox.parentNode.replaceChild(filterBox, searchBox);
+
+            // Set up filter events
             const filterInput = filterBox.querySelector('.abps-filter-input');
             const clearButton = filterBox.querySelector('.abps-filter-clear');
 
@@ -269,6 +280,9 @@
                     filterInput.focus();
                 });
             }
+
+            this.filterBoxCreated = true;
+            this.log('Custom ABPS filter box created');
         }
 
         /**
@@ -306,8 +320,32 @@
                 if (matches || !term) {
                     row.style.display = '';
                     visibleCount++;
+
+                    // Show corresponding update row if it exists
+                    const updateRow = this.getUpdateRow(row);
+                    if (updateRow) {
+                        updateRow.style.display = '';
+                    }
+
+                    // Show corresponding edit row if it exists
+                    const editRow = this.getEditRow(row);
+                    if (editRow) {
+                        editRow.classList.remove('abps-filtered-out');
+                    }
                 } else {
                     row.style.display = 'none';
+
+                    // Hide corresponding update row if it exists
+                    const updateRow = this.getUpdateRow(row);
+                    if (updateRow) {
+                        updateRow.style.display = 'none';
+                    }
+
+                    // Hide corresponding edit row if it exists
+                    const editRow = this.getEditRow(row);
+                    if (editRow) {
+                        editRow.classList.add('abps-filtered-out');
+                    }
                 }
             });
 
@@ -318,6 +356,42 @@
             document.dispatchEvent(event);
 
             this.log(`Filter: "${term}", visible: ${visibleCount}`);
+        }
+
+        /**
+         * Get the update notification row for a plugin row
+         */
+        getUpdateRow(pluginRow) {
+            const nextRow = pluginRow.nextElementSibling;
+            if (nextRow && nextRow.classList.contains('plugin-update-tr')) {
+                return nextRow;
+            }
+            return null;
+        }
+
+        /**
+         * Get the edit row for a plugin row
+         */
+        getEditRow(pluginRow) {
+            const slug = pluginRow.dataset.slug;
+            if (!slug) return null;
+
+            // Edit row could be next sibling or after update row
+            let currentRow = pluginRow.nextElementSibling;
+
+            // Skip update row if present
+            if (currentRow && currentRow.classList.contains('plugin-update-tr')) {
+                currentRow = currentRow.nextElementSibling;
+            }
+
+            // Check if this is the edit row for our plugin
+            if (currentRow &&
+                currentRow.classList.contains('abps-edit-row') &&
+                currentRow.dataset.pluginSlug === slug) {
+                return currentRow;
+            }
+
+            return null;
         }
 
         /**
