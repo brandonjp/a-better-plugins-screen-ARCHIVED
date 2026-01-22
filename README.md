@@ -152,10 +152,11 @@ a-better-plugins-screen/
 │   │   └── abps-main.js           # Initialization
 │   └── css/
 │       └── abps-main.css          # Styles
-├── vendor/                        # Composer dependencies
-├── README.md
+├── README.md                      # This file
 ├── readme.txt                     # WordPress.org readme
-└── LICENSE
+├── CHANGELOG.md                   # Version history
+├── LICENSE                        # GPLv3 license
+└── .gitignore                     # Git ignore rules
 ```
 
 ### Module Dependencies
@@ -240,11 +241,11 @@ Found a bug or have a feature request?
 git clone https://github.com/brandonjp/a-better-plugins-screen.git
 cd a-better-plugins-screen
 
-# Install dependencies
-composer install
-
 # Link to WordPress plugins directory
 ln -s $(pwd) /path/to/wordpress/wp-content/plugins/
+
+# Or copy directly
+cp -r a-better-plugins-screen /path/to/wordpress/wp-content/plugins/
 ```
 
 ## 📋 Requirements
@@ -340,7 +341,7 @@ If you find this plugin helpful:
 - Improved code quality
 - PHP 7.0+ and WordPress 5.0+ required
 
-See [full changelog](readme.txt#changelog) for complete history.
+See [CHANGELOG.md](CHANGELOG.md) for complete version history.
 
 ## 🗺️ Roadmap
 
