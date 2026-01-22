@@ -1,27 +1,36 @@
-# ignore everything in the root except the "wp-content" directory.
-!wp-content/
-
-# ignore everything in the "wp-content" directory, except:
-# "mu-plugins", "plugins", "themes" directory
-wp-content/*
-!wp-content/mu-plugins/
-!wp-content/plugins/
-!wp-content/themes/
-
-# ignore these plugins
-wp-content/plugins/hello.php
-
-# ignore specific themes
-wp-content/themes/twenty*/
-
-# ignore node dependency directories
+# Dependencies
 node_modules/
+vendor/
 
-# ignore log files and databases
+# Build artifacts
+*.min.js
+*.min.css
+
+# Log files and databases
 *.log
 *.sql
 *.sqlite
 
-# be ignorant to ignorant ds_store files
-**/.DS_Store
-**/._DS_Store
+# OS generated files
+.DS_Store
+._DS_Store
+Thumbs.db
+
+# IDE/Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+
+# Composer
+composer.lock
+
+# Package manager locks (if not using)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
