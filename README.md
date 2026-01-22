@@ -152,6 +152,13 @@ a-better-plugins-screen/
 │   │   └── abps-main.js           # Initialization
 │   └── css/
 │       └── abps-main.css          # Styles
+├── docs/
+│   └── ROADMAP.md                 # Development roadmap
+├── .claude/
+│   └── commands/
+│       ├── dev.md                 # Development workflow guide
+│       ├── audit.md               # Project audit command
+│       └── setup-dev-guide.md     # Dev guide setup prompt
 ├── README.md                      # This file
 ├── readme.txt                     # WordPress.org readme
 ├── CHANGELOG.md                   # Version history
@@ -247,6 +254,12 @@ ln -s $(pwd) /path/to/wordpress/wp-content/plugins/
 # Or copy directly
 cp -r a-better-plugins-screen /path/to/wordpress/wp-content/plugins/
 ```
+
+### Development Workflow
+
+For complete development documentation, see:
+- **[`.claude/commands/dev.md`](.claude/commands/dev.md)** - Full development workflow guide with standards, testing checklist, and troubleshooting
+- **[`docs/ROADMAP.md`](docs/ROADMAP.md)** - Phase-based development roadmap
 
 ## 📋 Requirements
 
@@ -345,14 +358,22 @@ See [CHANGELOG.md](CHANGELOG.md) for complete version history.
 
 ## 🗺️ Roadmap
 
-### Future Features (Not in v1.0)
+See **[`docs/ROADMAP.md`](docs/ROADMAP.md)** for detailed phase-based roadmap.
 
+### Upcoming Features
+
+**Phase 1.1 - UX Enhancements (Planned for v1.1.0):**
 - 🎯 Drag-and-drop link reordering
-- 🔔 Plugin update management
 - 💬 Plugin tooltips with metadata
+- Enhanced visual indicators
+
+**Phase 1.2 - Update Management (Planned for v1.2.0):**
+- 🔔 Plugin update management
+- Auto-update controls per plugin
+
+**Phase 2.0 - Advanced Features (Future):**
 - 📦 Bulk operations
 - 🔗 Git repository installation
-- 📊 Plugin usage analytics
 - 🔐 Plugin dependency management
 
 ---

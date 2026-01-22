@@ -5,6 +5,19 @@ All notable changes to **A Better Plugins Screen** will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added - Documentation
+- Comprehensive development workflow guide (`.claude/commands/dev.md`)
+- Phase-based roadmap (`docs/ROADMAP.md`)
+- Development guide setup command (`.claude/commands/setup-dev-guide.md`)
+
+### Changed
+- Enhanced dev.md with detailed workflow steps, testing checklist, and troubleshooting guide
+- Added version location table for easier version synchronization
+
+---
+
 ## [1.0.0] - 2025-11-12
 
 ### 🎉 Major Release - Complete Rewrite
