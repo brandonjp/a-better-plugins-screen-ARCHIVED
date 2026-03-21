@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Ralph — Plan Orchestrator (v3.0)
+# Ralph — Plan Orchestrator (v3.2)
 # =============================================================================
 #
 # Generic implement → review → fix loop for any chunked plan document.
@@ -36,11 +36,12 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 BLUE='\033[0;34m'; MAGENTA='\033[0;35m'; CYAN='\033[0;36m'
 BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
 
-log_info()    { echo -e "${BLUE}▸${RESET} $*"; }
-log_success() { echo -e "${GREEN}✔${RESET} $*"; }
-log_warn()    { echo -e "${YELLOW}⚠${RESET} $*"; }
-log_error()   { echo -e "${RED}✘${RESET} $*"; }
-log_step()    { echo -e "\n${BOLD}${MAGENTA}━━━ $* ━━━${RESET}\n"; }
+timestamp()   { date +%H:%M:%S; }
+log_info()    { echo -e "${DIM}$(timestamp)${RESET} ${BLUE}▸${RESET} $*"; }
+log_success() { echo -e "${DIM}$(timestamp)${RESET} ${GREEN}✔${RESET} $*"; }
+log_warn()    { echo -e "${DIM}$(timestamp)${RESET} ${YELLOW}⚠${RESET} $*"; }
+log_error()   { echo -e "${DIM}$(timestamp)${RESET} ${RED}✘${RESET} $*"; }
+log_step()    { echo -e "\n${DIM}$(date +%Y-%m-%d) $(timestamp)${RESET} ${BOLD}${MAGENTA}━━━ $* ━━━${RESET}\n"; }
 
 # ---------------------------------------------------------------------------
 # Timing helpers
@@ -71,6 +72,7 @@ elapsed_since_start() {
 # Graceful Ctrl+C handling
 # ---------------------------------------------------------------------------
 cleanup() {
+    stop_heartbeat 2>/dev/null || true
     echo ""
     log_warn "Interrupted (Ctrl+C). Progress has been saved."
     log_info "Elapsed: $(elapsed_since_start)"
@@ -310,7 +312,9 @@ is_chunk_skipped() {
 
 get_completed_count() {
     if [[ -f "$STATE_FILE" ]]; then
-        grep -c "^DONE:" "$STATE_FILE" 2>/dev/null || echo "0"
+        local count
+        count=$(grep -c "^DONE:" "$STATE_FILE" 2>/dev/null) || true
+        echo "${count:-0}"
     else
         echo "0"
     fi
@@ -351,6 +355,31 @@ prompt_action() {
 }
 
 # ---------------------------------------------------------------------------
+# Heartbeat — prints elapsed time every 30s so you know it's alive
+# ---------------------------------------------------------------------------
+HEARTBEAT_PID=""
+
+start_heartbeat() {
+    local start_ts="$1"
+    (
+        while true; do
+            sleep 60
+            local elapsed=$(( $(date +%s) - start_ts ))
+            echo -e "${DIM}  ⏱ $(date +%H:%M:%S) — still running… $(format_duration $elapsed)${RESET}" >&2
+        done
+    ) &
+    HEARTBEAT_PID=$!
+}
+
+stop_heartbeat() {
+    if [[ -n "$HEARTBEAT_PID" ]] && kill -0 "$HEARTBEAT_PID" 2>/dev/null; then
+        kill "$HEARTBEAT_PID" 2>/dev/null
+        wait "$HEARTBEAT_PID" 2>/dev/null || true
+    fi
+    HEARTBEAT_PID=""
+}
+
+# ---------------------------------------------------------------------------
 # Claude CLI wrapper
 # ---------------------------------------------------------------------------
 run_claude() {
@@ -363,10 +392,14 @@ run_claude() {
     phase_start=$(date +%s)
     log_info "Running claude --model ${model}..."
 
+    start_heartbeat "$phase_start"
+
     set +e
     claude --model "$model" -p --dangerously-skip-permissions "$prompt" 2>&1 | tee "$output_file"
     local exit_code=${PIPESTATUS[0]}
     set -e
+
+    stop_heartbeat
 
     local phase_elapsed=$(( $(date +%s) - phase_start ))
     log_info "Claude call completed in $(format_duration $phase_elapsed)"
@@ -457,24 +490,18 @@ A single failure means the overall result is REVIEW FAILED.
 PROMPT_EOF
     )
 
-    local output_file
-    output_file=$(mktemp)
+    run_claude "$REVIEW_MODEL" "$prompt"
 
-    set +e
-    claude --model "$REVIEW_MODEL" -p --dangerously-skip-permissions "$prompt" 2>&1 | tee "$output_file"
-    local exit_code=${PIPESTATUS[0]}
-    set -e
-
-    if grep -qi "REVIEW PASSED" "$output_file"; then
-        rm -f "$output_file"
+    if grep -qi "REVIEW PASSED" "$LAST_OUTPUT_FILE"; then
+        rm -f "$LAST_OUTPUT_FILE"
         log_success "Review PASSED for Chunk ${chunk_num}"
         return 0
-    elif grep -qi "REVIEW FAILED" "$output_file"; then
-        rm -f "$output_file"
+    elif grep -qi "REVIEW FAILED" "$LAST_OUTPUT_FILE"; then
+        rm -f "$LAST_OUTPUT_FILE"
         log_error "Review FAILED for Chunk ${chunk_num}"
         return 1
     else
-        rm -f "$output_file"
+        rm -f "$LAST_OUTPUT_FILE"
         log_warn "Review output unclear (no PASSED/FAILED keyword). Treating as FAILED."
         return 1
     fi
@@ -581,7 +608,7 @@ cd "$REPO_DIR"
 PLAN_TITLE=$(grep -m1 '^# ' "$PLAN_FILE" | sed 's/^# //' || basename "$PLAN_FILE" .md)
 
 echo -e "\n${BOLD}${CYAN}╔══════════════════════════════════════════════════════════╗${RESET}"
-echo -e "${BOLD}${CYAN}║  Ralph Orchestrator v3.0                                 ║${RESET}"
+echo -e "${BOLD}${CYAN}║  Ralph Orchestrator v3.2                                 ║${RESET}"
 echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════════════════════╝${RESET}\n"
 
 log_info "Plan: ${PLAN_TITLE}"
