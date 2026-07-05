@@ -1,0 +1,13 @@
+# wp-fse-sync per-project config — copy to your repo as scripts/fse-sync.conf
+# (or .fse-sync.conf at repo root) and fill in. All connection details are
+# resolved from the wp-host-ops registry via HOST_ALIAS, so nothing secret or
+# host-specific lives here — safe to commit.
+
+# Alias registered with wp-host-ops (see: wp-host.sh list)
+HOST_ALIAS="example.com"
+
+# Active block theme's stylesheet / slug
+THEME_SLUG="my-theme"
+
+# Theme directory relative to the repo root
+THEME_DIR="themes/my-theme"
