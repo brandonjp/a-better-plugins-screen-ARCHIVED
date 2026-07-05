@@ -1,6 +1,6 @@
 {
-  "synced_at": "2026-07-05T04:18:45Z",
-  "source_version": "v2.9.1",
+  "synced_at": "2026-07-05T15:11:46Z",
+  "source_version": "v2.10.0",
   "files": {
     "docs/shared-standards/ANALYTICS_PLAYBOOK.md": "9e9720cb8f6d0427e8868667ecac29a50598b771fe7016586a8ef4f897abe76c",
     "docs/shared-standards/CLAUDE_DESIGN_SYSTEM_SETUP.md": "9ad389085ca9d4663101c0c1ed3292022b5781743f6f727f7aed3c911709f281",
@@ -10,6 +10,7 @@
     "docs/shared-standards/MISSION_DRIVEN_WEB_GUIDE.md": "b94795fd346bc6ac59ef4416dba83ae91a348c726474eb7c27a5746aca09e8a9",
     "docs/shared-standards/MODEL_ADVISORY.md": "3cc7796222b72e6efc7acefba1709de91beb886be0f39ba3278d155e925dd906",
     "docs/shared-standards/PROJECT_HEALTH_CHECKLIST.md": "93ef0acc8a77883a6cdb4ba1a4fe9b0cf3fd32f35ebd266e3e7b86f912e29331",
+    "docs/shared-standards/SESSION_HANDOFF_PROTOCOL.md": "25c5a7b88520835b403be2566094a6f58af3fc6ed1aba0c22da7927af82c58f5",
     "docs/shared-standards/SHARED_INFRA_DECISION_GUIDE.md": "bdbad0f2f17c3523ed826b608432f325ccf40d08a4b14d2ad24c5fe5f9fbd22c",
     "docs/shared-standards/SHARED_INTEGRATION_PATTERNS.md": "63e49bdb96c039b88ba9f87cf4696e2b22a62c5be1058d0e398aed222bcb8ea9",
     "docs/shared-standards/SPAM_PROTECTION_PATTERN.md": "daf0cb9816e75e8044f0757bfdc3c705ed00ac199cc6dc7df5ad0aefd2cc061f",
@@ -26,9 +27,9 @@
     ".claude/commands/review-branch-quick.md": "fbf1525c6b3f767c4006e411dfa7124a9baa7e703921460f9860315fe88d1b63",
     ".claude/commands/review-branch.md": "41f6e808990088cd8cbc55338388ea2fd1b740d60e3108dad8b56c3e54d2972f",
     ".claude/commands/sync-here-to-shared.md": "aea6b3cefebac29d0d6c546f87702ff48eb2eab7b52a26666a12df2d312cd53c",
-    ".claude/commands/sync-projects.md": "d1e8f42c7386fdaf59ede548e681913b8844fd0c6918c8a346e0d34de50d70ce",
+    ".claude/commands/sync-projects.md": "1425919064e7b309b1e35a75ad3fcd2067a30290a695dc7416c7ba5bac74469a",
     ".claude/commands/sync-shared-to-all.md": "58808246dbc1f20dc18a219d891c4c9eb36ccecde88a071f7915c86a89deca91",
-    ".claude/commands/sync-shared-to-here.md": "465473a1197df0db57cd975fd4f9d9864964a74b7cc2f744c3b8c756c5eba146",
+    ".claude/commands/sync-shared-to-here.md": "464aca5a76a8fd844ffd540bb323d09323fc98f9e42754e942e87b8d0e387fa2",
     ".claude/commands/whats-next.md": "7b7f144306274d149ec3a6258a56a6d9a39e1d16fe053096287cfee3e9eb5f7a",
     "scripts/fse-sync.conf.example": "a6a5eb5d440401281331a6fc39293dcff4b486ee0a3977f87a032cfce102c9ca",
     "scripts/wp-fse-sync.sh": "0c12b1bcd07a7d6f757962a93a36eea5d0c521579c0cfa9c2a6f05d50fabe825",

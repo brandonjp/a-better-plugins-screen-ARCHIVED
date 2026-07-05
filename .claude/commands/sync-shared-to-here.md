@@ -59,7 +59,7 @@ For each `FLAG` file (locally modified, differs from incoming shared version):
 2. Read the local version
 3. Merge: keep local customizations, integrate shared updates
 4. Write the result
-5. Re-run `bash <shared-path>/bin/sync-to-repos.sh --force --repo "$(pwd)"` to refresh the manifest hash for that file
+5. Re-run `bash <shared-path>/bin/sync-to-repos.sh --overwrite-file <rel-path> --repo "$(pwd)"` to refresh the manifest hash for that file (overwrites ONLY that one file; use `--overwrite-local-edits` if you deliberately want every flagged file overwritten)
 
 If unsure whether a local change is intentional, ask the user.
 

@@ -94,7 +94,7 @@ For each flagged file:
    - **Local version has project-specific customizations** (extra sections, modified content) → keep those customizations, but integrate any new or updated shared content around them
    - **Both changed the same section** → use your judgment to merge, preferring to keep both sets of changes where possible
 4. Write the merged result to the target project
-5. After merging, re-run the sync script with `--force --repo /path/to/project` to update the manifest hash for that file
+5. After merging, re-run the sync script with `--overwrite-file <rel-path> --repo /path/to/project` to update the manifest hash for that file (overwrites ONLY that file; `--overwrite-local-edits` overwrites every flagged file)
 
 **Merging principles:**
 - Local customizations are valuable — never silently discard them
