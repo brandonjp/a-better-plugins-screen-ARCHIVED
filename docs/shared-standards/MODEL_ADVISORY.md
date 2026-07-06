@@ -8,6 +8,12 @@
 
 ---
 
+## The model ladder
+
+Cheapest to most capable: **Sonnet → Opus → Fable**. Fable 5 is a Mythos-class tier above Opus — strongest on ambitious, ambiguous, or creative work (taste-driven design, greenfield architecture, second opinions on critical work). Everything below that says "suggest a stronger model" includes Fable as the top rung: Sonnet escalates to Opus for judgment-heavy work; Opus escalates to Fable only on an objective trigger (ambiguous/taste-driven brief, repeated failed attempts, expensive-to-unwind decisions, second-opinion requests) — never on self-assessed capability, per the core insight below.
+
+---
+
 ## The core insight — declare fit, don't (only) detect it
 
 Model fit is mostly a **property of the command**, not something to rediscover at runtime. Whoever authors the command knows whether it's mechanical or subtle — that judgment is available once, at authoring time, with full context. So the **load-bearing** mechanism is a *static declaration*, shown every run regardless of which model is executing.

@@ -83,12 +83,23 @@ Full standard: `docs/shared-standards/SESSION_HANDOFF_PROTOCOL.md`. The rules, c
 - **Event-based, not size-based.** No token-count polling or hooks; triggers are finishing substantive work, `/session-close`, or the harness's own heavy-context warning (treat that as a cue to proactively offer bucket-3 handoffs).
 - **Self-check before ending a turn:** scan your response for follow-up language (*consider, might want, later, eventually, worth exploring, next step*) — every hit maps to a tracker line written this turn, or gets cut.
 
-## Model Sanity Check — flag when a cheaper model would do
+## Model Sanity Check — flag model mismatches in BOTH directions
 
-Before starting ANY substantive task, do a quick sanity check: could a cheaper model tier handle this well (Opus for most work, Sonnet for well-scoped tasks with clear instructions)? If the current session is running a more expensive model than the task needs (e.g. Fable doing something Opus-capable), say so up front in ONE line — e.g. "FYI: this is Opus-capable — want a handoff prompt for a cheaper session?" — before doing the work. If asked for the handoff, format it per "Prompts for New Sessions" below.
+The model ladder, cheapest to most capable: **Sonnet → Opus → Fable** (Fable 5 is a Mythos-class tier above Opus — strongest on ambitious, ambiguous, or creative work). Before starting ANY substantive task, do a quick sanity check in both directions:
 
-- Skip the flag when the task is trivial enough that answering now costs less than a handoff round-trip — just do it.
-- This is about reserving expensive model capacity for tasks that genuinely need it (deep multi-file reasoning, subtle debugging, ambiguous architecture work).
+**Downgrade — flag when a cheaper model would do.** Could a cheaper tier handle this well (Opus for most work, Sonnet for well-scoped tasks with clear instructions)? If the current session is running a more expensive model than the task needs (e.g. Fable doing something Opus-capable), say so up front in ONE line — e.g. "FYI: this is Opus-capable — want a handoff prompt for a cheaper session?" — before doing the work. If asked for the handoff, format it per "Prompts for New Sessions" below.
+
+**Escalate — flag when the task looks Fable-shaped.** Do NOT self-assess capability ("am I good enough for this?" always answers yes — see `docs/shared-standards/MODEL_ADVISORY.md`). Instead check the TASK against these objective triggers, any of which is worth a flag:
+
+- Requirements are genuinely ambiguous or taste-driven: product framing, greenfield architecture, design direction, naming, "make this good" briefs.
+- You've made 2+ failed attempts at the same bug, or a fix keeps regressing/bouncing back in review.
+- An early decision would be expensive to unwind later (cross-repo impact, foundational architecture, public API shape).
+- The user wants a second opinion, or the output is hard to verify cheaply.
+
+When a trigger matches, say so in ONE line — e.g. "this looks Fable-shaped (ambiguous architecture) — want a handoff prompt for a Fable session?" — then proceed either way. Never block on it, never claim certainty that a stronger model is needed; it's an offer the user can ignore.
+
+- Skip the flag (either direction) when the task is trivial enough that answering now costs less than a handoff round-trip — just do it.
+- This is about matching capacity to the task: reserving expensive models for work that genuinely needs them (deep multi-file reasoning, subtle debugging, ambiguous architecture) AND not quietly under-serving that work with a lighter tier.
 
 ## Prompt Formatting for Copy/Paste
 
@@ -125,12 +136,17 @@ or
 ```
 > **⮕ OPUS**
 ```
+or
+```
+> **⮕ FABLE**
+```
 
 Use your judgment to recommend the right model for the task:
 - **SONNET** for: straightforward implementations, config changes, small bug fixes, docs updates, well-scoped tasks with clear instructions, tasks where the prompt itself provides sufficient context
 - **OPUS** for: complex multi-file refactors, architectural decisions, ambiguous requirements that need interpretation, tasks requiring deep codebase reasoning, debugging subtle issues, anything where you'd want the model to think carefully about tradeoffs
+- **FABLE** for: genuinely ambitious, ambiguous, or creative work — greenfield architecture with wide blast radius, taste-driven design/product decisions, second-opinion reviews of critical work, problems that have already defeated an Opus session. Fable is the scarce tier — recommend it only when one of those actually applies, not as a better-safe-than-sorry default.
 
-When in doubt, recommend OPUS — it's better to over-spec than to waste a session on a model that struggles with the task.
+When in doubt between Sonnet and Opus, recommend OPUS — it's better to over-spec than to waste a session on a model that struggles with the task. Do NOT resolve doubt by escalating to FABLE; that tier needs a positive reason.
 
 **General rules:**
 - Use the actual repository/folder name (e.g., `booklink-fyi`, `audiobees`, `splitgive`)
@@ -139,4 +155,3 @@ When in doubt, recommend OPUS — it's better to over-spec than to waste a sessi
 - This applies to ALL generated prompts for new sessions, not just `/whats-next` or `/session-close`
 
 <!-- shared-ai-docs:end -->
-

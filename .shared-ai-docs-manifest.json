@@ -1,5 +1,5 @@
 {
-  "synced_at": "2026-07-06T13:07:52Z",
+  "synced_at": "2026-07-06T23:21:17Z",
   "source_version": "v2.10.0",
   "files": {
     "docs/shared-standards/ANALYTICS_PLAYBOOK.md": "9e9720cb8f6d0427e8868667ecac29a50598b771fe7016586a8ef4f897abe76c",
@@ -8,7 +8,7 @@
     "docs/shared-standards/EMAIL_INFRASTRUCTURE.md": "c29639b7b04564e5bbdab17fab9c8937013be5cd781a4b10abb8467efd7fc355",
     "docs/shared-standards/ERROR_TRACKING.md": "48b7f098fa06e51ae4be291984bde316c2ddb3e1218161a17d43f85cd76c89ef",
     "docs/shared-standards/MISSION_DRIVEN_WEB_GUIDE.md": "b94795fd346bc6ac59ef4416dba83ae91a348c726474eb7c27a5746aca09e8a9",
-    "docs/shared-standards/MODEL_ADVISORY.md": "3cc7796222b72e6efc7acefba1709de91beb886be0f39ba3278d155e925dd906",
+    "docs/shared-standards/MODEL_ADVISORY.md": "7b824bf21280fe976087ff9ca6e310dabd57db239d83a81f348c6e23e04f09ee",
     "docs/shared-standards/PROJECT_HEALTH_CHECKLIST.md": "93ef0acc8a77883a6cdb4ba1a4fe9b0cf3fd32f35ebd266e3e7b86f912e29331",
     "docs/shared-standards/SESSION_HANDOFF_PROTOCOL.md": "25c5a7b88520835b403be2566094a6f58af3fc6ed1aba0c22da7927af82c58f5",
     "docs/shared-standards/SHARED_INFRA_DECISION_GUIDE.md": "bdbad0f2f17c3523ed826b608432f325ccf40d08a4b14d2ad24c5fe5f9fbd22c",
@@ -40,7 +40,7 @@
     "scripts/ralph-runner.sh": "43725fa5563ad196ef04106b934d0d09982605a4c3bdb01f3ab143663b9dfde2",
     "scripts/wp-fse-sync.sh": "0c12b1bcd07a7d6f757962a93a36eea5d0c521579c0cfa9c2a6f05d50fabe825",
     "scripts/wp-rest.sh": "c8ccd9a7cb129c98c3c90df8b2a581cbaa9f09da499a3cfdfcf63a5be79a74a4",
-    "CLAUDE.md": "f6f4a2a6f8f298560f367d066598af4153ebc6a37845e0797c373f927a63d986",
+    "CLAUDE.md": "9aed8b9fe1f61ad333b56431b738a2d29334b47746d833e8d555543cec113053",
     "docs/shared-standards/CLAUDE_CODE_WEB_REST.md": "dceaa90652004db4a595a9cc7582b3ffdb32fa3ef79299c5b719342f1807996c",
     "docs/shared-standards/COMPANY_DEFAULTS.md": "b86593a74b58783f6adef019db4a80538f2f80fb8391ddb13d07ada6bb4edfc1",
     "docs/shared-standards/FREE_VS_PRO.md": "7e91a370f4e6eeb84822110bd0e10b260b544697e2e519e11359e8090ad78302",
