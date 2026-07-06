@@ -1,3 +1,10 @@
+---
+name: setup-dev-guide
+description: Create a comprehensive development workflow system for this project
+---
+
+<!-- MANAGED BY shared-ai-docs — do not hand-edit here; edit the source in the shared-ai-docs repo and re-sync. Local formatters (Prettier, markdownlint, …) should leave this file alone. -->
+
 # Universal Development Guide & Workflow Setup
 
 **Create a comprehensive development workflow system for this project that any developer (human or AI) can use to quickly understand and continue development.**
@@ -124,10 +131,10 @@ This is your primary development workflow reference. Adapt this template to the 
 Development is organized into phases. Each phase represents a coherent set of functionality.
 
 **Phase Status Legend:**
-- Complete
-- In Progress
-- Planned
-- Future Consideration
+- ✅ Complete
+- 🚧 In Progress
+- 📋 Planned
+- 🔮 Future Consideration
 
 ### Current Focus: Phase [X.X]
 
@@ -201,14 +208,16 @@ Development is organized into phases. Each phase represents a coherent set of fu
 - **Coverage goal:** Focus on quality over quantity - 100% of critical features, not 100% of code
 
 ### Git Workflow
+- **Feature branches required:** All work must be done in feature branches—never commit directly to main
+- **Branch naming:** `feature/`, `fix/`, `refactor/`, `docs/`, or `phase-X.X/` prefix with short description
 - **Commit format:** [Detect actual format: Conventional commits / other]
-- **Branch strategy:** [Detect actual strategy]
-- **Required before commit:**
+- **Required before merge to main:**
   - Tests pass
   - Linter passes
   - Version bumped if code changed
   - CHANGELOG updated
   - Documentation updated
+- **After merge:** Delete the feature branch (local and remote)
 
 ### CI/CD (if exists)
 - **CI Platform:** [GitHub Actions / GitLab CI / other - detect actual]
@@ -239,12 +248,18 @@ Development is organized into phases. Each phase represents a coherent set of fu
 
 ### Starting a Work Session
 
-1. **Review current state:**
+1. **Pull latest main and create a feature branch:**
+   ```bash
+   git checkout main && git pull
+   git checkout -b feature/[short-description]
+   ```
+
+2. **Review current state:**
    - Check `docs/ROADMAP.md` for current phase
    - Review `CHANGELOG.md` Unreleased section
    - Check for any blockers or prerequisites
 
-2. **Choose work item:**
+3. **Choose work item:**
    - Follow priority order above
    - Or specify: "work on phase [X.X]"
    - Or pick from TODO/issues
@@ -263,7 +278,7 @@ Development is organized into phases. Each phase represents a coherent set of fu
 2. **Update version number** (if code changed)
 3. **Update CHANGELOG.md** with changes
 4. **Update ROADMAP.md** if phase completed
-5. **Commit with descriptive message**
+5. **Merge feature branch to main and delete the branch**
 6. **Summarize what was done and suggest next steps**
 
 ---
@@ -367,7 +382,7 @@ Development is organized into phases. Each phase represents a coherent set of fu
 **For Backend APIs:**
 - API documentation format (detect: OpenAPI/Swagger/other)
 - Authentication testing process
-- Database migration workflow
+- Database migration workflow — **CRITICAL: document that already-applied migration files must NEVER be modified. New schema changes always go in a new numbered file. Version-based runners skip files whose version is already recorded, so appended DDL will be silently ignored in production.**
 - API versioning strategy
 
 **For CLI Tools:**
@@ -400,18 +415,18 @@ Create with phase-based structure:
 Development follows a phased approach.
 
 **Phase Status Legend:**
-- Complete | In Progress | Planned | Future
+- ✅ Complete | 🚧 In Progress | 📋 Planned | 🔮 Future
 
 ---
 
 ## Phases
 
-### Phase 1.0 - Foundation
+### Phase 1.0 - Foundation ✅
 **Objective:** [What was accomplished]
 **Completed in v[X.X.X] - [Date]**
 - [Completed items]
 
-### Phase 2.0 - [Current Phase]
+### Phase 2.0 - [Current Phase] 🚧
 **Objective:** [What this accomplishes]
 **Started: v[X.X.X]**
 
@@ -424,7 +439,7 @@ Development follows a phased approach.
 **Remaining:**
 - [Todo] - Priority: High/Medium/Low
 
-### Phase 3.0 - [Next Phase]
+### Phase 3.0 - [Next Phase] 📋
 **Objective:** [Planned work]
 **Prerequisites:** Complete Phase 2.0
 **Planned Work:**
@@ -702,3 +717,109 @@ Apply these principles (adapt as needed):
 
 ### Self-Reference
 **First action:** Save this entire prompt to `.claude/commands/setup-dev-guide.md` so it can be easily re-run or updated in future sessions.
+
+---
+
+### 2. Create `.claude/commands/commit.md`
+
+This is the pre-commit checklist that ensures nothing gets missed when finishing work. It should be run before every commit/merge to main.
+
+```markdown
+# /commit - Pre-Commit Checklist
+
+> Run this before committing finished work to ensure nothing is missed.
+
+---
+
+## Documentation & Version Updates
+- Update all markdown docs (README, CHANGELOG, ROADMAP, TODO, etc.) to reflect current state
+- Bump version number everywhere it appears (follow dev guide standards)
+- Ensure dates are current throughout
+- Verify all docs are in correct order and internally consistent
+- Version bump should be appropriate to the work done (patch/minor/major)
+
+## Database Migration Safety
+- **NEVER modify an already-applied migration file.** Always create a new numbered file. The migration runner tracks versions by number — if you add tables to an existing migration, they will be silently skipped in production.
+- If you added new tables or columns, verify they are in their own new migration file
+- Use `IF NOT EXISTS` for idempotency
+
+## Pragmatic Testing
+- Review critical features and ensure they have tests
+- Focus on: authentication, data integrity, API endpoints, core business logic
+- Don't test trivial getters/setters or simple UI components
+- If we added/modified critical functionality without tests, add them now
+- Tests should be maintainable and actually catch real issues
+
+## Git Housekeeping
+- Check `main` branch for any updates and rebase if needed
+- Resolve any conflicts
+- Ensure commit history is clean
+
+## Final Verification
+- Confirm all changes follow the dev guide standards
+- Follow the `.claude/commands/dev.md` document for project-specific standards
+- Run tests if applicable
+- Ensure nothing was missed from the original request
+- List all files modified and briefly state why
+
+## Today's Date
+```
+
+### 3. Adapt Dev Guide to Project Type
+
+**For WordPress Plugins/Themes:**
+- Include WordPress plugin/theme header requirements and versioning
+- WordPress Coding Standards (WPCS) configuration
+- Hook/filter documentation requirements
+- WordPress.org deployment process (if applicable)
+- SVN workflow (if WordPress.org plugin)
+- readme.txt standards for WordPress.org
+- wp-cli commands if used
+- Localization/translation workflow
+
+**For JavaScript/TypeScript Projects:**
+- Actual package manager detection (npm/yarn/pnpm/bun)
+- Package.json scripts documentation
+- Build optimization notes
+- Component documentation standards (if React/Vue)
+- Bundle analysis process (if configured)
+
+**For Python Projects:**
+- Actual dependency manager (pip/pipenv/poetry)
+- Virtual environment setup
+- Package distribution process (if applicable)
+- Docstring format (detect actual: Google/NumPy/reST)
+- Type hinting standards
+
+**For PHP Projects (Non-WordPress):**
+- Composer scripts and autoloading
+- PSR standards if applicable
+- Framework-specific conventions (Laravel, Symfony, etc.)
+
+**For Backend APIs:**
+- API documentation format (detect: OpenAPI/Swagger/other)
+- Authentication testing process
+- Database migration workflow — **CRITICAL: document that already-applied migration files must NEVER be modified. New schema changes always go in a new numbered file. Version-based runners skip files whose version is already recorded, so appended DDL will be silently ignored in production.**
+- API versioning strategy
+
+**For CLI Tools:**
+- Command documentation format
+- Help text standards
+- Configuration file locations
+- Distribution/installation process
+
+### 4. Create `.claude/commands/` Directory
+
+If it doesn't exist, create it and add:
+- **`dev.md`** - The primary development workflow (this file)
+- **`commit.md`** - Pre-commit checklist for finishing work
+- **`setup-dev-guide.md`** - This prompt itself (for future updates)
+
+---
+
+## Today's Date:
+2026-02-16
+
+---
+
+*Run `/setup-dev-guide` to regenerate the development workflow after significant project changes.*

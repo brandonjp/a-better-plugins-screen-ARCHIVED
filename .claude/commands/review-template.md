@@ -1,4 +1,9 @@
 ---
+name: review-template
+description: Perform a code review and plan the next development task
+---
+
+<!-- MANAGED BY shared-ai-docs — do not hand-edit here; edit the source in the shared-ai-docs repo and re-sync. Local formatters (Prettier, markdownlint, …) should leave this file alone. -->
 
 # Review & Plan Instructions
 

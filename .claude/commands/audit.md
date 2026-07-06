@@ -1,4 +1,11 @@
-# Universal Project Housekeeping & Documentation Audit
+---
+name: audit
+description: Run a comprehensive housekeeping and documentation audit of this project
+---
+
+<!-- MANAGED BY shared-ai-docs — do not hand-edit here; edit the source in the shared-ai-docs repo and re-sync. Local formatters (Prettier, markdownlint, …) should leave this file alone. -->
+
+# /audit - Universal Project Housekeeping & Documentation Audit
 
 **Run a comprehensive audit and cleanup of this project's documentation and structure.**
 
@@ -28,6 +35,15 @@ This allows future sessions to simply say "Run a project audit" without needing 
    - List all documentation files found (README, CHANGELOG, etc.)
    - Note documentation format conventions being used
    - Identify the project's documentation standards (if any)
+   - **For license-related files (LICENSE, COPYING, NOTICE):**
+     - Record presence and filename only
+     - Do **not** ingest, quote, or summarize full license text
+
+3. **Git Repository Status**
+   - Current branch (should be a feature branch for audit work, not main)
+   - Uncommitted changes
+   - Branch naming conventions in use
+   - Remote configuration
 
 ---
 
@@ -38,8 +54,16 @@ This allows future sessions to simply say "Run a project audit" without needing 
 **Root-level Documentation:**
 - Ensure primary README exists and is comprehensive
 - Verify CHANGELOG/HISTORY exists and is up-to-date
-- Check for LICENSE file
+- Check for LICENSE file **or a clearly designated license reference**
 - Look for CONTRIBUTING guidelines if collaborative project
+
+**License Handling (Important):**
+- If a LICENSE file exists, do **not** load or reproduce its contents
+- If no LICENSE file exists:
+  - Designate the intended license by **name and SPDX identifier**
+  - Link to the canonical external license text (SPDX / OSI / official source)
+  - This reference may live in README and/or LICENSE.md
+- Do **not** generate or embed full license text unless explicitly instructed
 
 **Documentation Directory Structure:**
 - Review `/docs`, `/documentation`, or equivalent
@@ -52,26 +76,34 @@ This allows future sessions to simply say "Run a project audit" without needing 
 - CHANGELOG.md / HISTORY.md / CHANGES.md
 - ROADMAP.md / TODO.md
 - CONTRIBUTING.md
-- LICENSE / LICENSE.md
+- LICENSE / LICENSE.md (reference only, not contents)
 - SECURITY.md
 - API documentation
 - Architecture/design documents
 
+---
+
 ### 2. Version Consistency
 
-**Identify all version sources in the project:**
-- Configuration files (package.json, composer.json, pyproject.toml, Cargo.toml, pom.xml, etc.)
-- Plugin/module headers (WordPress plugins, Python modules, etc.)
-- Documentation references (README, CHANGELOG)
-- Version constants in source code
-- Git tags
+**Check version numbers across all locations:**
+- Package manifest (package.json, composer.json, pyproject.toml, Cargo.toml, etc.)
+- Main source file headers/constants
+- Documentation references
+- Changelog entries
+- README badges
 
-**Verify and synchronize:**
-- All version numbers match across files
-- CHANGELOG latest entry matches current version
-- ROADMAP/TODO completed sections reflect current version
-- Update version if changes warrant it
-- Document version bumping strategy if unclear
+**Verify versioning strategy:**
+- Semantic versioning (MAJOR.MINOR.PATCH)
+- CalVer (calendar-based)
+- WordPress-style versioning
+- Project-specific conventions
+
+**Fix inconsistencies:**
+- Identify canonical version source
+- Update all other locations to match
+- Document version locations in dev guide if not already
+
+---
 
 ### 3. README Review & Enhancement
 
@@ -83,194 +115,151 @@ This allows future sessions to simply say "Run a project audit" without needing 
 - Project structure overview
 - Links to detailed documentation
 - Contribution guidelines (or link to CONTRIBUTING.md)
-- License information
+- **License information (name + SPDX identifier + link; not full text)**
 - Contact/support information
 
+**Quality Checks:**
+- All code examples are current and functional
+- Links are not broken
+- Installation instructions actually work
+- Screenshots/diagrams are up-to-date (if present)
+
+---
+
+### 4. CHANGELOG Review
+
+**Verify CHANGELOG follows conventions:**
+- Keep a Changelog format (preferred)
+- Or project's established format
+- Entries are in reverse chronological order
+
+**Check content:**
+- Unreleased section exists for pending changes
+- All significant changes are documented
+- Version numbers match releases
+- Dates are accurate
+
+---
+
+### 5. ROADMAP & TODO Review
+
+**If ROADMAP.md exists:**
+- Update completed items
+- Remove obsolete planned items
+- Ensure current phase is accurate
+- Verify priorities are current
+
+**If TODO.md or similar exists:**
+- Remove completed items
+- Update priorities
+- Archive old/obsolete items
+
+---
+
+### 6. Git Workflow Verification
+
+**Confirm feature branch workflow is documented:**
+- Dev guide specifies feature branches are required
+- Branch naming conventions are defined
+- Merge and cleanup process is documented
+
+**Current audit work:**
+- This audit should be performed in a feature branch (e.g., `chore/project-audit`)
+- Changes committed and merged following project's standard workflow
+
+---
+
+### 7. Configuration Files Audit
+
+**Common files to check:**
+- .gitignore (comprehensive for project type)
+- .editorconfig (if used)
+- Linter/formatter configs
+- CI/CD configuration
+- Environment example files (.env.example)
+
 **Verify:**
-- All links work (internal and external)
-- Installation steps are current and accurate
-- Examples run without errors
-- Project structure diagram matches reality
-- Technology stack is clearly stated
+- No sensitive data in tracked files
+- Example configs are complete and documented
+- Ignore patterns are appropriate
 
-### 4. Progress Tracking & Roadmap
+### 7b. Database Migration File Audit
 
-**ROADMAP.md / TODO.md Review:**
-- Move completed items to appropriate sections
-- Remove or update stale items
-- Ensure "In Progress" reflects current work
-- Version milestones align with actual releases
-- Consider moving detailed tasks to issue tracker
+**If the project uses numbered migration files (e.g., `app/migrations/`):**
+- Verify that no migration file has been modified after being applied in production
+- Each schema change (new table, new column, new index) must be in its own new numbered migration file
+- **NEVER append new DDL to an already-applied migration.** The runner tracks versions by number — appended changes will be silently skipped. This caused a production outage in v1.31.1.
+- Migration files should use `IF NOT EXISTS` for idempotency
+- Check that migration file numbering is sequential with no gaps
 
-**CHANGELOG.md Verification:**
-- Follows consistent format (Keep a Changelog, conventional commits, etc.)
-- Latest changes are documented
-- Each version has a date
-- Breaking changes are clearly marked
-- Links to commits/PRs if applicable
+---
 
-### 5. Developer Workflow & Onboarding
+### 8. Dev Guide & Commands Verification
 
-**Development Guide Verification:**
-- **Check for `.claude/commands/dev.md`** - This is the primary development workflow document
-- If missing or inadequate, flag for creation
-- If present, verify it contains:
-  - Project overview and quick start
-  - Clear phase-based roadmap reference
-  - Development standards (code quality, testing, versioning, commits)
-  - Key files documentation
-  - Common tasks workflow
-  - "How to continue development" guidance
+**Check for `.claude/commands/dev.md` or equivalent:**
+- If exists: verify accuracy and completeness
+- If missing: recommend running setup-dev-guide
 
-**Quick Start Validation:**
-- Test that setup instructions actually work
-- Verify prerequisites are clearly listed
-- Check that environment setup steps are complete
-- Ensure development workflow is documented and accessible
+**Check for `.claude/commands/commit.md`:**
+- If exists: verify it covers documentation updates, version bumps, testing, git housekeeping, and final verification
+- If missing: create it using the standard pre-commit checklist template
 
-**Developer Documentation:**
-- Code style guidelines (or reference to them)
-- Testing instructions and commands
-- Build/deployment process
-- Architecture overview
-- Key file/directory explanations
-- Common troubleshooting issues
-
-**Workflow Accessibility:**
-- Can a new developer (human or AI) get started quickly?
-- Is it clear what to work on next?
-- Are development standards easy to find and follow?
-- Can you easily reference specific work phases? (e.g., "work on phase 3.5")
-
-### 6. Cleanup & Maintenance
-
-**Remove or Fix:**
-- Stale or orphaned documentation
-- Broken internal links
-- Outdated screenshots or examples
-- Redundant or conflicting information
-- Old script references that no longer exist
-- TODOs embedded in documentation that belong in issue tracker
-
-**File Organization:**
-- Ensure consistent naming conventions
-- Move documentation to standard locations
-- Create .gitignore or equivalent if missing
-- Check for sensitive data in documentation
-
-### 7. CI/CD Health Check
-
-**If CI configuration exists:**
-- Check `.github/workflows/`, `.gitlab-ci.yml`, etc.
-- Verify CI runs are reasonably fast (under 5 minutes ideal)
-- Check if testing multiple language versions unnecessarily
-- Ensure it tests appropriate things for the project
-- **Verify test failure reporting:** Check if CI outputs detailed, AI-friendly failure summaries when tests fail (test names, file locations, error messages, stack traces, environment info, reproduce commands). If not, recommend adding this.
-
-**If CI is Missing:**
-- Note in recommendations if project would benefit from pragmatic CI
-
-**If CI is Problematic:**
-- Identify slow-running workflows
-- Note unnecessary complexity
-- Suggest simplification if warranted
-- Check if test failures are difficult to debug (missing detailed output)
+**Dev guide should include:**
+- Quick start commands
+- Project overview
+- Development standards
+- Git workflow (including feature branches)
+- Reference to `/commit` checklist in the "Completing Work" section
+- Current priorities
+- Key file locations
 
 ---
 
 ## Phase 3: Project-Type-Specific Tasks
 
-### For JavaScript/TypeScript Projects (React, Next.js, Node.js, etc.)
+### WordPress Projects
+- Verify plugin/theme headers match version
+- Check readme.txt (WordPress.org format) if applicable
+- Validate text domain consistency
+- Review hook documentation
 
-**Configuration Files:**
-- package.json: Verify scripts, dependencies, version
-- Detect package manager (npm/yarn/pnpm/bun) and document it
-- tsconfig.json / jsconfig.json: Check for outdated settings
-- .eslintrc / .prettierrc: Ensure coding standards are documented
+### JavaScript/Node.js Projects
+- Verify package.json is complete (description, keywords, repository, etc.)
+- Check for outdated dependencies (note, don't auto-update)
+- Review scripts section documentation
+- Verify .nvmrc or engines field if applicable
 
-**Documentation:**
-- Component documentation (if React/Vue)
-- API endpoint documentation (if backend)
-- Environment variables documentation (.env.example)
-- Deployment guide
+### Python Projects
+- Verify pyproject.toml / setup.py completeness
+- Check requirements files are current
+- Review __version__ consistency
+- Verify virtual environment documentation
 
-**Scripts:**
-- Verify all package manager scripts work
-- Document custom scripts in README
-- Check build/test/deploy pipelines
-
-### For PHP Projects (WordPress, Laravel, etc.)
-
-**Configuration Files:**
-- composer.json: Verify dependencies, version, scripts
-- WordPress plugin/theme headers: Match version numbers
-- .env.example: Document all required environment variables
-
-**WordPress-Specific:**
-- Plugin/Theme header comments are accurate and follow WordPress standards
-- readme.txt follows WordPress.org standards if applicable
-- Installation instructions cover WordPress-specific steps
-- Hooks/filters are documented
-- Shortcodes are documented
-- Coding standards: Note if following WordPress Coding Standards (WPCS)
-- PHPCS configuration for WordPress standards if applicable
-
-**Laravel-Specific:**
-- Artisan commands documented
-- Service providers listed
-- Middleware explained
-- Configuration files documented
-
-### For Python Projects (Django, Flask, CLI tools, etc.)
-
-**Configuration Files:**
-- setup.py / setup.cfg / pyproject.toml: Verify metadata, version
-- requirements.txt / Pipfile / poetry.lock: Check dependencies
-- Detect dependency manager (pip/pipenv/poetry) and document it
-- .python-version: Document Python version requirements
-
-**Module Documentation:**
-- Ensure __init__.py files have docstrings
-- Verify module-level documentation
-- Check that CLI commands are documented (if applicable)
-
-**Django-Specific:**
-- settings.py configuration documented
-- URL patterns explained
-- Management commands documented
-- Migration strategy explained
-
-### For Other Project Types
-
-**Adapt the above patterns to:**
-- Java (Maven/Gradle, Spring Boot)
-- Go (go.mod, module documentation)
-- Rust (Cargo.toml, crate documentation)
-- Ruby (Gemfile, Rails)
-- .NET (csproj, NuGet)
+### PHP Projects (non-WordPress)
+- Verify composer.json completeness
+- Check PSR compliance documentation
+- Review autoloading configuration
 
 ---
 
-## Phase 4: Quality Assurance
+## Phase 4: Cleanup Tasks
 
-**Before finalizing:**
+### Remove Clutter
+- Identify and flag unused files
+- Find duplicate documentation
+- Locate orphaned assets
+- Check for development artifacts that shouldn't be committed
 
-1. **Run Available Linters/Validators**
-   - Use whatever linters are configured in the project
-   - Markdown linters if available
-   - Link checkers if available
+### Organize Structure
+- Ensure consistent directory naming
+- Move misplaced files
+- Create missing standard directories
+- Update .gitignore if needed
 
-2. **Verify Key Workflows**
-   - Installation steps work from scratch
-   - Build process completes successfully
-   - Tests run (if test command exists)
-   - Key scripts execute without errors
-
-3. **Consistency Check**
-   - Terminology is consistent across documents
-   - File naming follows project conventions
-   - Code examples use consistent style
-   - Version references are synchronized
+### Archive Old Content
+- Move obsolete documentation to /docs/archive or similar
+- Update references to archived content
+- Don't delete without confirmation
 
 ---
 
@@ -279,53 +268,91 @@ This allows future sessions to simply say "Run a project audit" without needing 
 ### 1. Summary Report
 
 Provide a clear summary including:
-- **Project type detected:** [Language/Framework/Tools]
-- **Version status:** Current version, whether bumped, rationale
-- **Files modified:** List of changed documentation files
-- **Dev guide status:** Present/Missing/Needs improvement - Action taken or recommended
-- **CI/CD status:** Present and reasonable / Present but needs optimization / Missing / Not applicable
-- **Issues found and fixed:** Categorized list
-- **Issues found but not fixed:** With explanation why
-- **Recommendations:** Suggestions for improvement
 
-### 2. Commit Strategy
+**Project Overview:**
+- Project type detected
+- Primary language/framework
+- Build system identified
 
-- **Commit all changes** with descriptive message following project's commit convention
-- If version bumped, update all relevant files and tag if appropriate
-- Keep documentation changes in logical, atomic commits if multiple areas affected
+**Version Status:**
+- Current version found
+- Version consistency (pass/fail)
+- Locations checked
 
-### 3. Next Steps
+**Documentation Status:**
+- Files audited
+- Files modified
+- Files created
+- Files recommended for creation
 
-**Suggest the next development priority:**
-- Based on ROADMAP/TODO if available
-- Based on incomplete documentation areas
-- Based on code debt identified during audit
-- Provide a clear, actionable prompt for the next session
+**Commands Status:**
+- `dev.md` exists and is current (yes/no)
+- `commit.md` exists and is current (yes/no)
+- Other commands present
+
+**Git Workflow Status:**
+- Feature branch workflow documented (yes/no)
+- Current branch during audit
+
+**Issues Found:**
+- Critical issues (blocking)
+- Warnings (should fix)
+- Suggestions (nice to have)
+
+**Changes Made:**
+- List of files modified with brief description
+- List of files created
+
+**Recommendations:**
+- Prioritized list of remaining tasks
+- Suggested next steps
+
+**Do not include or quote full license text in the summary**
 
 ---
 
-## Success Criteria
+### 2. Commit Changes
 
-- All documentation is organized and up-to-date
-- Version numbers are consistent across the project
-- README provides clear project overview and getting started guide
-- CHANGELOG reflects actual project history
-- No broken links in documentation
-- Development workflow guide exists and is comprehensive (`.claude/commands/dev.md`)
-- Developer onboarding is smooth and complete
-- Stale/redundant documentation is removed
-- Project structure is clear and logical
-- Next development steps are clearly identified
-- CI/CD is appropriate for project stage
-- This audit prompt is saved to `.claude/commands/audit.md` for future use
+After completing audit:
+- Stage all changes
+- Commit with descriptive message: `chore: project documentation audit and cleanup`
+- If on feature branch, note ready for merge
+- List files changed in commit
 
 ---
 
 ## Execution Notes
 
-- **Be thorough but pragmatic** - fix what matters, note what's optional
-- **Preserve project conventions** - adapt to existing patterns rather than imposing new ones
-- **Detect actual tools used** - don't assume npm when they use bun, don't assume pip when they use poetry
-- **When in doubt, document** - better to over-communicate than under-communicate
-- **Think about the next developer** - would someone new understand this project?
-- **First action: Save this prompt to `.claude/commands/audit.md`** for future reference
+- Be thorough but pragmatic
+- Preserve project conventions
+- Detect actual tools used
+- When in doubt, document
+- **Avoid ingesting large legal or third-party license texts**
+- Think about the next developer
+- **Perform audit work in a feature branch, not directly on main**
+
+---
+
+## Audit Checklist
+
+Use this for quick reference:
+
+- [ ] Project type identified
+- [ ] All documentation files located
+- [ ] Version consistency verified
+- [ ] README reviewed and complete
+- [ ] CHANGELOG current
+- [ ] ROADMAP/TODO updated
+- [ ] Git workflow documented (including feature branches)
+- [ ] Config files audited
+- [ ] Dev guide exists and is accurate
+- [ ] Pre-commit checklist (`commit.md`) exists and is accurate
+- [ ] Clutter identified/removed
+- [ ] Structure organized
+- [ ] Summary report generated
+- [ ] Changes committed (in feature branch)
+
+---
+
+*Last Updated: 2026-02-16*
+*Run `/audit` to perform a comprehensive project documentation audit.*

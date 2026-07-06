@@ -1,3 +1,10 @@
+---
+name: session-close
+description: Wrap up a development session with summary, commits, and handoff notes
+---
+
+<!-- MANAGED BY shared-ai-docs — do not hand-edit here; edit the source in the shared-ai-docs repo and re-sync. Local formatters (Prettier, markdownlint, …) should leave this file alone. -->
+
 # Session Close — Wrap & Summarize
 
 You are finishing a development session. Complete every section below in order. If a section doesn't apply, explicitly state why. Do not skip sections silently.
@@ -78,20 +85,26 @@ Your final output is a **single, complete prompt** that the human will paste int
 The **very first line** must follow this exact format:
 
 ```
-# [repo-name] - Review: [specific feature/area worked on]
+# [repo-name] - Task: Code Review of [short feature summary]
 ```
 
 Rules:
-- Must start with `# ` (single hash, space)
-- Use the **actual repository/folder name** (e.g., `matchasights-tool`, not "MatchaSights Tool")
-- Then ` - Review: ` (exactly this, with spaces and colon)
-- Then a specific description of the work — not the branch name, not a generic label
+- Must start with `# ` followed by the actual repository/folder name
+- Then ` - Task: Code Review of ` (exactly this)
+- Then a short summary (2-6 words) of what was built
+- The pattern works because chat title generators strip "repo-name" and "Task:" as structural labels, leaving "Code Review of [feature]" as the generated title
+- Keep the feature summary concise — if the title gets truncated, "Code Review" should still survive at the front
 
 Examples:
-- `# matchasights-tool - Review: activity and operations logging`
-- `# dot-pics - Review: image upload pipeline and S3 integration`
-- `# seesee - Review: Stripe webhook receiver endpoint`
-- `# commonprayer-app - Review: Umami dashboard configuration and setup script (Phase 2C)`
+- `# matchasights-tool - Task: Code Review of activity logging system`
+- `# dot-pics - Task: Code Review of S3 upload pipeline`
+- `# seesee - Task: Code Review of Stripe webhook endpoint`
+- `# commonprayer-app - Task: Code Review of Phase 2C dashboard setup`
+
+Bad examples (don't do these):
+- `# matchasights-tool - Review: activity and operations logging` (colon after "Review" causes it to be treated as a label and stripped — chat title ends up identical to the implementation session)
+- `# matchasights-tool - Code Review of activity logging` (without "Task:" prefix, the title generator may strip "Code Review" as a label instead)
+- `# Code Review — Activity Logging System` (loses repo name context in the prompt document)
 
 The **second line** must be a clear, standalone model directive — nothing else:
 

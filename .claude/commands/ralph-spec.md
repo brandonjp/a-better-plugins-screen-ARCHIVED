@@ -1,3 +1,10 @@
+---
+name: ralph-spec
+description: Write a structured implementation spec for the Ralph orchestrator
+---
+
+<!-- MANAGED BY shared-ai-docs — do not hand-edit here; edit the source in the shared-ai-docs repo and re-sync. Local formatters (Prettier, markdownlint, …) should leave this file alone. -->
+
 # /ralph-spec — Write a Ralph Implementation Spec
 
 You are writing a structured implementation spec for use with the **Ralph orchestrator** (`scripts/ralph-runner.sh`). Ralph automates an implement → review → fix loop using the Claude CLI, where a fast model (Sonnet) implements each chunk and a stronger model (Opus) reviews it.
@@ -16,14 +23,40 @@ These are absolute rules. Violating any of them produces a broken, unusable spec
 - Do NOT offer to "go ahead and implement this." Write the document and stop.
 - The human will run the spec themselves using `ralph-runner.sh`.
 
-### ONE spec file. Always.
-- Every spec MUST be a single `.md` file. Never split work across multiple files (no `plan-2a.md`, `plan-2b.md`, etc.).
-- If the work is large, use more chunks within one file. Ralph handles up to ~15 chunks fine.
-- If the user asks for something that seems like it needs multiple specs, put it all in one file with clear chunk boundaries.
+### Spec file sizing — one feature per file, but SPLIT large features into numbered sub-plans.
+**Why this matters (token cost):** the runner re-reads the ENTIRE plan file in every chunk's
+implement AND review session (each phase prompt in `ralph-runner.sh` says "Read the plan file").
+So one big file is re-ingested ~2× per chunk — a 12-chunk file ≈ **24 full re-reads**. Size files to
+keep that cost down.
+
+- **Default: one focused feature → one file**, for small/medium features (**≤ ~6 chunks**). Never
+  combine *unrelated* features into one giant spec.
+- **Split a LARGE single feature into multiple NUMBERED sub-plan files** once it would exceed
+  **~6–8 chunks**: `plan-<feature>-1-<part>.md`, `-2-<part>.md`, `-3-<part>.md`, run **sequentially on
+  one shared branch**. Each sub-plan stays small, so each session re-reads only its part. This is NOT
+  the forbidden "part1/part2" fragmentation — split along **dependency boundaries** (e.g. foundation →
+  components → assembly) and number files so the run order is obvious from the filenames.
+- **Every sub-plan after the first MUST open with a prerequisite gate.** Its Chunk 1, Step 1 verifies
+  the prior sub-plans' outputs exist (`test -f …`, grep for expected exports/tokens) and **HALTS** with
+  instructions if not — so an out-of-order run can never silently redo or break earlier work. State the
+  dependency explicitly at the top of the file too ("⛔ PREREQUISITE — File N must be complete first").
+- **Independent features always get separate files** regardless of size.
+- **Declare the branch in every plan doc** via a `**Branch:** \`feature/<feature>\`` line (all
+  sub-plans of one feature declare the SAME branch). The runner reads this field and uses it, so the
+  user need not pass `--branch`. **Emit ONE ready-to-copy command** listing all files in order; include
+  `--branch feature/<feature>` as a belt-and-suspenders override (also covers older runner copies not
+  yet synced with the `**Branch:**`-parsing fix). Example:
+  `bash scripts/ralph-runner.sh plan-x-1-foo.md plan-x-2-bar.md plan-x-3-baz.md --branch feature/x`
+- **Declare models in the plan doc when the defaults are wrong for the work** (runner ≥ v4.17):
+  optional `**Impl-Model:** \`opus\`` and `**Review-Model:** \`<model>\`` lines next to `**Branch:**`.
+  Resolution is CLI flag > plan field > default (sonnet impl / opus review), re-resolved per plan in
+  multi-plan runs. Use `**Impl-Model:** \`opus\`` when implementation quality is the whole deliverable
+  (e.g. prose-heavy standards docs with no tests to catch a weak draft); omit both lines for normal
+  code work — the sonnet-implements/opus-reviews default is the point of Ralph.
 
 ### Never create wrapper scripts.
 - `ralph-runner.sh` is the only orchestrator. Never create secondary shell scripts like `run-all.sh`, `execute-plans.sh`, `orchestrate.sh`, etc.
-- All work goes in one spec file, run by one script.
+- A feature's work goes in its spec file(s) — one file, or numbered sub-plans for a large feature (see sizing rule above) — run by `ralph-runner.sh`, never a wrapper script.
 
 ### NO meta-planning.
 - Never write a spec step that invokes `/ralph-spec`, `/ralph-plan`, `claude`, or any AI command to "generate the real plan later."
@@ -43,7 +76,8 @@ These are absolute rules. Violating any of them produces a broken, unusable spec
 
 ### Chunks must be right-sized for Sonnet.
 - Each chunk should be implementable in a single Claude session (~5-20 minutes of work).
-- A chunk with more than ~8 files or ~15 steps is too large. Split it.
+- Each chunk should touch **1-3 files**. If a task spans more files, split it into multiple chunks.
+- A chunk with more than ~3 files or ~10 steps is too large. Split it.
 - A chunk with only 1-2 trivial steps is too small. Merge it with an adjacent chunk.
 
 ### The user just re-runs the same command.
@@ -51,11 +85,13 @@ These are absolute rules. Violating any of them produces a broken, unusable spec
 - Never instruct the user to pass `--start-from`. That flag exists only as a manual override.
 - The correct instruction is always: "Just run the same command again."
 
-### Plan files and state files MUST be committed.
-- Plan files (`docs/plan-*.md`) and state files (`*.ralph-state`) must be tracked in git.
-- These files MUST NOT be listed in `.gitignore`. If they are, remove the ignore rule.
-- Committing state files allows other developers or Claude sessions to resume from where the plan left off if Ralph is interrupted mid-cycle.
-- When all chunks pass, Ralph automatically cleans up: removes the state file and archives the plan to `docs/archive/`.
+### Plan and state files are runner-owned. Do NOT touch them in chunk steps.
+- Plan files (`docs/plan-*.md`) and state files (`*.ralph-state`) must be tracked in git and MUST NOT be listed in `.gitignore`.
+- **The runner commits the state file automatically** after every phase transition (`mark_chunk_done`, `save_phase`) so progress survives any interruption or destructive operation.
+- **The runner archives the plan automatically** when all chunks pass — it `git mv`s the plan to `docs/archive/`, removes the state file, and commits both in one cleanup commit.
+- **Chunk steps must never `git mv`, `git rm`, edit, or commit the plan file, the state file, or anything under `docs/archive/`.** These are runner-owned. The only allowed edit to the plan file is marking step checkboxes from `- [ ]` to `- [x]` for steps under the current chunk.
+- **Do not write spec steps that "commit the state file" or "move the plan to archive".** The runner handles both. If you write such steps, the runner's own auto-commit will collide with them.
+- **Review checkpoints must not flag plan/state/archive files as "git status clean" violations.** Only files inside the chunk's actual scope should count. The runner's auto-commits between phases mean those files may legitimately be dirty when the review runs.
 
 ---
 
@@ -111,7 +147,7 @@ Brief 1-2 sentence description of what this spec accomplishes and why.
 
 **Critical rule:** [State any invariant that must never be broken, e.g., "Existing tests must continue to pass"]
 
-**Testing:** [Command to verify after each chunk, e.g., `npm test`, `python -m pytest tests/ -v`, `composer test`]
+**Testing:** [Exact command to run tests — check CLAUDE.md's Testing section for the correct command. If tests run inside Docker, include the full Docker command here so the implementing agent doesn't have to guess.]
 
 **Project context:** Read `CLAUDE.md` in the repo root for full project conventions.
 
@@ -148,6 +184,7 @@ Follow these rules strictly:
 
 ### Chunk Design
 - **3-9 chunks** is ideal for most work. Up to ~15 is acceptable for large features. Fewer than 3 means the chunks are too large. More than 15 means reconsider scope.
+- Each chunk should touch **1-3 files max**. When a task applies the same change to many files (e.g., narrowing exceptions in 5 modules), split it into multiple chunks of 2-3 files each. Chunks that stay within 1-3 files consistently finish in under 15 minutes; chunks touching 4+ files risk session timeouts and looping behavior.
 - Each chunk should be **independently committable** — it must leave the project in a working state.
 - Each chunk should take **5-20 minutes** for Sonnet to implement. If it would take longer, split it.
 - List the **key files** being modified in the chunk header.
@@ -177,13 +214,19 @@ Follow these rules strictly:
 - Use conventional commit format: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
 - Each chunk should specify its commit message.
 
+### Docker-Based Testing
+If the project runs tests inside Docker (check CLAUDE.md), the spec's `**Testing:**` line should
+note this so the implementing agent understands. Ralph's `--test-cmd` flag injects the exact
+command into the agent prompt, but the spec should still reference the correct command in its
+review checkpoints (e.g., the Docker command, not bare `python -m pytest`).
+
 ### What NOT to Include
 - Do NOT include setup/environment steps (the developer has already set up).
 - Do NOT include PR creation or branch merging — Ralph handles the branch.
 - Do NOT include "read the codebase" steps — the implementation prompt already handles this.
 - Do NOT combine unrelated work in a single chunk.
 - Do NOT include steps that invoke `/ralph-spec`, `/ralph-plan`, `claude`, or any other AI command.
-- Do NOT split work across multiple spec files.
+- For a LARGE single feature (>~6–8 chunks), DO split it into numbered sub-plan files on a shared branch with prerequisite gates (see the sizing rule). Do NOT cram it into one ~15-chunk file — that re-ingests the whole plan ~24×. Do NOT fragment a *small* feature, and do NOT combine *unrelated* features into one file.
 - Do NOT create wrapper scripts or orchestration scripts of any kind.
 
 ## 5. Validate the Spec
@@ -191,14 +234,14 @@ Follow these rules strictly:
 Before presenting the spec, run through ALL of these checks. Fix any issues before showing it to the human.
 
 ### Structural Checks
-1. **Single file** — Is everything in ONE spec file? (If not, merge.)
-2. **Chunk count** — Is 3-15 reasonable for this scope of work?
+1. **Right file sizing** — Small/medium feature → one file. LARGE feature (>~6–8 chunks) → numbered sub-plan files on a shared branch, each (after the first) opening with a prerequisite gate, with one `--branch`-bearing run command. Unrelated features → separate files. (See the sizing rule in the critical rules.)
+2. **Chunk count per file** — Is each file ~3–8 chunks? If one file would run long, split the feature into numbered sub-plans rather than packing ~15 chunks into one.
 3. **No meta-planning** — Does every step describe a direct action? (No steps that invoke AI commands.)
 4. **No wrapper scripts** — Does the spec avoid creating any `.sh` files for orchestration?
 
 ### Per-Chunk Checks
 For each chunk, verify:
-5. **Right-sized** — Could Sonnet implement this in one session? (≤~8 files, ≤~15 steps)
+5. **Right-sized** — Could Sonnet implement this in one session? (≤3 files, ≤~10 steps)
 6. **Self-contained** — Does this chunk compile/run/pass tests on its own?
 7. **No forward deps** — Does this chunk depend only on previous chunks, never later ones?
 8. **No stubs** — Does every step produce real, complete code?
@@ -226,6 +269,9 @@ bash scripts/ralph-runner.sh docs/plan-<n>.md --dry-run
 # Execute the spec (or resume if interrupted — just re-run this same command)
 bash scripts/ralph-runner.sh docs/plan-<n>.md
 
+# Run multiple independent spec files sequentially
+bash scripts/ralph-runner.sh docs/plan-a.md docs/plan-b.md docs/plan-c.md
+
 # Re-run just the review for a specific chunk
 bash scripts/ralph-runner.sh docs/plan-<n>.md --review-only 2
 
@@ -237,11 +283,39 @@ bash scripts/ralph-runner.sh docs/plan-<n>.md --impl-model haiku --review-model 
 
 # Use a custom branch name
 bash scripts/ralph-runner.sh docs/plan-<n>.md --branch feature/my-branch
+
+# Adjust per-chunk timeout (default: 45m) — kills stuck agents
+bash scripts/ralph-runner.sh docs/plan-<n>.md --chunk-timeout 30m
 ```
+
+**When you generated multiple spec files**, always include a ready-to-copy command with the real filenames so the user can run them all sequentially:
+
+```bash
+# Run all specs sequentially
+bash scripts/ralph-runner.sh docs/plan-foo.md docs/plan-bar.md docs/plan-baz.md
+```
+
+**ALWAYS also give the queue-file version of the run command.** Every time you hand the user a ready-to-copy `ralph-runner.sh` command (single plan or multi-file), ALSO provide the same job as a machine-level queue snippet for `ralph-queue.sh` (shared-ai-docs `bin/ralph-queue.sh`), so they can paste it straight into their current queue file and batch it with other projects' loops (e.g. overnight, sharing one Claude plan-limit budget). The snippet is TWO lines — a `#` comment header identifying the project + task (same style as the new-session handoff-prompt heading; `ralph-queue.sh` skips `#` lines) followed by the job line:
+
+```
+# <repo-name> - Ralph: <specific task description>
+<absolute-repo-dir> ::: <ralph command>
+```
+
+Use the repo's REAL absolute path and the real plan filenames/branch — e.g.:
+
+```
+# my-repo - Ralph: dove SVG recoloring + queryId hardening
+/Users/brandonjp/path/to/my-repo ::: bash scripts/ralph-runner.sh docs/plan-foo.md docs/plan-bar.md --branch feature/foo
+```
+
+Label the two clearly ("run it directly" vs "or as a ralph-queue job"), and copy the queue snippet (both lines) to the clipboard per the clipboard rule. This applies to ANY session that hands over a ralph plan run command, not just this command's output.
 
 **Post-completion:** When all chunks pass, Ralph automatically:
 1. Deletes the `.ralph-state` file (no longer needed)
 2. Moves the plan to `docs/archive/` (keeps `docs/` clean)
+3. **Commits the move + deletion** as `chore(ralph): archive completed plan <name>`
 
-The `.ralph-state` file IS tracked in git while work is in progress — this allows
-other developers or Claude sessions to resume from where the plan left off.
+**During the run:** Ralph also auto-commits the state file after every phase transition (e.g., `chore(ralph): plan-foo chunk 3 done`). This means the state file is always tracked in git and progress is durable against any subsequent destructive operation. Other developers or Claude sessions can resume from where the plan left off by re-running the same command.
+
+Because of this, **chunk steps must never include `git add`/`git commit`/`git mv` operations on the plan file or state file** — the runner owns those files. See the "Plan and state files are runner-owned" rule above.
