@@ -1,5 +1,5 @@
 {
-  "synced_at": "2026-07-06T23:52:40Z",
+  "synced_at": "2026-07-07T17:46:03Z",
   "source_version": "v2.10.0",
   "files": {
     "docs/shared-standards/ANALYTICS_PLAYBOOK.md": "9e9720cb8f6d0427e8868667ecac29a50598b771fe7016586a8ef4f897abe76c",
@@ -21,6 +21,7 @@
     ".claude/commands/admin-ux-audit.md": "0ef9c2f491dfc287058858d7aaff8d110b95920049f64132032ab44a57d23d2b",
     ".claude/commands/audit.md": "4e701e4e7e82e81fbe8ef81d48f5efd747d686a3856efb494af5b0e35d4bccb2",
     ".claude/commands/check-shared-docs.md": "df14f48361d78b930279ec788d6d786ecdb69f357bcd35b1891120f3e1942451",
+    ".claude/commands/fable-day.md": "fbdfd0e740cccb15d37180b67a6843951fb9195efba2d77bca8e8045392acb65",
     ".claude/commands/fetch-claude-design.md": "6d33d35f6f8c735ef4539163bd756d4edc4d0e68c1146dd23121e6718e39bd6e",
     ".claude/commands/finish.md": "0253d909e43e3460d59a52844fee2d43cf2bef593ff3313401d8a07042499ed7",
     ".claude/commands/ralph-spec.md": "356711385c3699ee23385e2e10bd08166eb00a24ace74446c1cb69480b2c1b66",
