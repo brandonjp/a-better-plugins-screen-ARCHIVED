@@ -1,5 +1,14 @@
 # Project Guide
 
+## 🧊 Frozen Reference — Superseded by `wp-better-plugins-screen` (2026-07-07)
+
+This is **A Better Plugins Screen PRO** — the original, working gen-1 plugin (2021–2025, shipped v1.0.0). As of 2026-07-07 it is **frozen as reference**: active development moved to the from-scratch gen-3 rebuild at `../wp-better-plugins-screen`, which uses this codebase as its **product spec** (see that repo's `docs/DECISIONS.md` DR-001 for the full rationale and history).
+
+- **Do not add features here.** Port them: this repo's JS modules (`assets/js/abps-*.js`) are the reference implementations for the new repo's milestones.
+- The sibling `a-better-plugins-screen` (no suffix) is the abandoned gen-2 rewrite — also frozen; not a seed for anything.
+- Both folders are zipped in `../_archive/` and removed from the shared-ai-docs sync collection.
+- Naming history: local folder was `a-better-plugins-screen-ARCHIVED` → renamed `-PRO` on 2026-07-07 (earlier that same day, before the gen-3 decision). The GitHub remote still says `a-better-plugins-screen-ARCHIVED` — Brandon will settle final repo names separately.
+
 ## Ralph Loop — Automated Plan Execution
 
 This project uses **Ralph**, an automated orchestrator that implements chunked plans via Claude CLI.
